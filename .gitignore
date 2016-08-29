@@ -1,4 +1,14 @@
+# Binaries
 bin/
 build/
+
+# test.db will be created by Gradle (os-specific SQLite)
+src/test/resources/test.db
+
+# Gradle
+.gradle
+
+# Vim 
 *.swp
+*~
 
