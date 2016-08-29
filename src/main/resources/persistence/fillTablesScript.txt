@@ -1,0 +1,39 @@
+{exerciseGroups [id, name, editable]
+	{1, "middleRow", 0}
+	{2, "upperRow", 0}
+	{3, "lowerRow", 0}
+	{4, "allCharacters", 0}
+	{5, "numberRow", 0}
+	{6, "charactersNumbers", 0}
+	{7, "words", 0}
+	{8, "texts", 0}
+	{9, "userDefined", 1}
+}
+
+{exercises [name, groupId, lineCreatorType, param, limitType, limitUnits]
+	{"e1", 1, GENERIC_RAND, "fj", CHARS, 120}
+	{"e2", 1, GENERIC_RAND, "dfjk", CHARS, 120}
+	{"e3", 1, GENERIC_RAND, "sdfjkl", CHARS, 120}
+	{"e4", 1, GENERIC_RAND, "asdfjklö", CHARS, 120}
+	{"e5", 1, GENERIC_RAND, "asdfghjklö", CHARS, 120}
+	{"e6", 1, GENERIC_RAND, "asdfghjklöä", CHARS, 120}
+	{"e7", 2, GENERIC_RAND, "ru", CHARS, 120}
+	{"e8", 2, GENERIC_RAND, "erui", CHARS, 120}
+	{"e9", 2, GENERIC_RAND, "weruio", CHARS, 120}
+	{"e10", 2, GENERIC_RAND, "qweruiop", CHARS, 120}
+	{"e11", 2, GENERIC_RAND, "qwertzuiop", CHARS, 120}
+	{"e12", 2, GENERIC_RAND, "qwertzuiopü", CHARS, 120}
+	{"e13", 3, GENERIC_RAND, "vm", CHARS, 120}
+	{"e14", 3, GENERIC_RAND, "cvm,", CHARS, 120}
+	{"e15", 3, GENERIC_RAND, "xcvm,.", CHARS, 120}
+	{"e16", 3, GENERIC_RAND, "yxcvm,.-", CHARS, 120}
+	{"e17", 3, GENERIC_RAND, "yxcvbnm,.-", CHARS, 120}
+	{"e18", 4, GENERIC_RAND, "abcdefghijklmnopqrstuvwxyzäöüß.,-", CHARS, 50}
+	{"e19", 4, GENERIC_RAND, "abcdefghijklmnopqrstuvwxyzäöüßABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ.,-;:", CHARS, 120}
+	{"e20", 5, GENERIC_RAND, "58", CHARS, 20}
+	{"e21", 5, GENERIC_RAND, "4589", CHARS, 120}
+	{"e22", 5, GENERIC_RAND, "345890", CHARS, 120}
+	{"e23", 5, GENERIC_RAND, "2345890", CHARS, 120}
+	{"e24", 5, GENERIC_RAND, "234567890", CHARS, 120}
+	{"e25", 5, GENERIC_RAND, "1234567890", CHARS, 120}
+}

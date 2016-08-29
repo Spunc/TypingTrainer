@@ -1,0 +1,29 @@
+package trainer.lineCreators;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+import trainer.lineCreators.LineCreatorFactory.ImplementationNotFound;
+
+public class GenericWordLineCreatorTest {
+
+	@Test
+	public void testRandWordCreator() throws ImplementationNotFound {
+		testLineCreator(LineCreatorFactory.getLineCreator("GENERIC_RAND", "abcde", null));
+	}
+	
+	@Test
+	public void testRandLangWordCreator() throws ImplementationNotFound {
+		testLineCreator(LineCreatorFactory.getLineCreator("GENERIC_RAND_LANG",
+				"abcABC.", null));
+	}
+	
+	public void testLineCreator(LineCreator l) {
+		String line = l.create(30);
+		assertTrue(line.length() <= 30+1);
+		assertTrue(line.charAt(line.length()-1) == ('\n'));
+		assertFalse(line.charAt(line.length()-2) == (' '));
+	}
+
+}
