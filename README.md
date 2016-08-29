@@ -27,6 +27,5 @@ will follow.
 
 ### Screenshot
 
-![Screenshot](https://raw.githubusercontent.com/Spunc/TypingTrainer/master/github_doc_resources/TypingTrainer.png)
+![Screenshot](https://raw.githubusercontent.com/Spunc/TypingTrainer/master/github_doc_resources/TypeWriteTrainer.png)
 
-### 
