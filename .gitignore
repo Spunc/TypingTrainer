@@ -9,3 +9,8 @@ build/
 *.swp
 *~
 
+# Eclipse
+.classpath
+.project
+.settings
+
