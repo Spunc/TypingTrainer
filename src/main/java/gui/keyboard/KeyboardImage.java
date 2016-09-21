@@ -5,6 +5,9 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 
@@ -22,23 +25,35 @@ public class KeyboardImage extends Component {
 		private Color(String fileName) {this.fileName = fileName;}
 	}
 	
+	private static class ColoredChar {
+		char c;
+		Color col;
+		ColoredChar(char c, Color col) {
+			this.c = c;
+			this.col = col;
+		}
+		@Override
+		public boolean equals(Object obj) {
+			if(!(obj instanceof ColoredChar))
+				return false;
+			ColoredChar o = (ColoredChar) obj;
+			return c == o.c && col == o.col;
+		}
+	}
+	
 	private KeyMapper keyMapper;
-	private Color[] additionalColors;
-	private String[] chars2Color;
 	private BufferedImage backgroundImage;
-	private BufferedImage[] colorImages;
+	private Map<Color, BufferedImage> colorImages;
 	private Dimension imageSize;
+	private LinkedList<ColoredChar> chars2color = new LinkedList<>();
 	
 	public KeyboardImage(String localeID, Color backgroundColor, Color... additionalColors) {
 		keyMapper = new KeyMapper(localeID);
-		this.additionalColors = additionalColors.clone();
-		chars2Color = new String[additionalColors.length];
-		colorImages = new BufferedImage[additionalColors.length];
+		colorImages = new HashMap<>(additionalColors.length);
 		try {
 			backgroundImage = getImage(backgroundColor, localeID);
-			for(int i=0; i<colorImages.length; ++i) {
-				chars2Color[i] = "";
-				colorImages[i] = getImage(additionalColors[i], localeID);
+			for(Color c : additionalColors) {
+				colorImages.put(c, getImage(c, localeID));
 			}
 		} catch (IOException e) {
 			throw new RuntimeException("Missing image file.", e);
@@ -47,25 +62,11 @@ public class KeyboardImage extends Component {
 	}
 	
 	public void colorChar(char c, Color color) {
-		int colIndex = findColorIndex(color);
-		if(chars2Color[colIndex].indexOf(c) > 0)
-			return;
-		else
-			chars2Color[colIndex] = chars2Color[colIndex] + c;
+		chars2color.add(new ColoredChar(c, color));
 	}
 	
 	public void removeChar(char c, Color color) {
-		int colIndex = findColorIndex(color);
-		chars2Color[colIndex] = chars2Color[colIndex].replace(Character.toString(c), "");
-	}
-	
-	private int findColorIndex(Color c) {
-		for(int i=0; i<additionalColors.length; ++i) {
-			if(additionalColors[i].equals(c)) {
-				return i;
-			}
-		}
-		throw new RuntimeException("Specified color not in initialized set.");
+		chars2color.remove(new ColoredChar(c, color));
 	}
 	
 	private static BufferedImage getImage(Color c, String localeID) throws IOException {
@@ -81,18 +82,18 @@ public class KeyboardImage extends Component {
 	@Override
 	public void paint(Graphics g) {
 		g.drawImage(backgroundImage, 0, 0, null);
-		for(int colorIndex=0; colorIndex<colorImages.length; ++colorIndex) {
-			for(int charIndex=0; charIndex<chars2Color[colorIndex].length(); ++charIndex) {
-				try {
-					Coordinates[] coord = keyMapper.getCoordinatesFor(chars2Color[colorIndex].charAt(charIndex));
-					for(Coordinates c : coord) {
-						g.drawImage(colorImages[colorIndex], c.x1, c.y1, c.x2, c.y2,
-								c.x1, c.y1, c.x2, c.y2, null);
-					}
-				} catch (NotInKeySetException e) {
-					// Just do not try to color a char that is not in the key set.
+		for(ColoredChar cc : chars2color) {
+			Coordinates[] coord;
+			try {
+				coord = keyMapper.getCoordinatesFor(cc.c);
+				for(Coordinates c: coord) {
+					g.drawImage(colorImages.get(cc.col), c.x1, c.y1, c.x2, c.y2,
+							c.x1, c.y1, c.x2, c.y2, null);
 				}
+			} catch (NotInKeySetException e) {
+				// char does not exist in key set: just do nothing
 			}
+
 		}
 	}
 
