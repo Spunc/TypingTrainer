@@ -3,19 +3,63 @@ package gui.keyboard;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
+import javax.swing.Timer;
 
 import gui.keyboard.KeyMapper.NotInKeySetException;
+
+/**
+ * A visual representation of a keyboard.
+ * 
+ * <p>Individual keys or key combinations can be colored in different colors than the background
+ * color.
+ * 
+ * <p>This class needs separate .gif image files that are located in this package
+ * (<i>gui.keyboard</i>) for every color and every locale. The file names always end with the code
+ * that belongs to the <code>Locale</code> (e. g. <i>en_UK</i>), before the file extension
+ * <i>.gif</i> is appended:
+ * 
+ * <table summary="Keyboard image files">
+ * 	<tr>
+ * 		<th>File name</th>
+ * 		<th>Keyboard color</th>
+ * 	</tr>
+ * 	<tr>
+ * 		<td>im_bw_</td>
+ * 		<td>black and white</td>
+ * 	</tr>
+ * 	<tr>
+ * 		<td>im_green_</td>
+ * 		<td>green</td>
+ * 	</tr>
+ * 	<tr>
+ * 		<td>im_red_</td>
+ * 		<td>red</td>
+ * 	</tr>
+ * 	<tr>
+ * 		<td>im_yellow_</td>
+ * 		<td>yellow</td>
+ * 	</tr>
+ * </table>
+ * 
+ * @author Lasse Osterhagen
+ *
+ */
 
 @SuppressWarnings("serial")
 public class KeyboardImage extends Component {
 	
+	/**
+	 * Colors for keys
+	 */
 	public enum Color {
 		BLACK_WHITE("bw"),
 		RED("red"),
@@ -25,19 +69,22 @@ public class KeyboardImage extends Component {
 		private Color(String fileName) {this.fileName = fileName;}
 	}
 	
-	private static class ColoredChar {
-		char c;
+	/**
+	 * A rectangle that is associated with a color.
+	 */
+	private static class ColoredCoordinates {
+		Coordinates c;
 		Color col;
-		ColoredChar(char c, Color col) {
+		ColoredCoordinates(Coordinates c, Color col) {
 			this.c = c;
 			this.col = col;
 		}
 		@Override
 		public boolean equals(Object obj) {
-			if(!(obj instanceof ColoredChar))
+			if(!(obj instanceof ColoredCoordinates))
 				return false;
-			ColoredChar o = (ColoredChar) obj;
-			return c == o.c && col == o.col;
+			ColoredCoordinates o = (ColoredCoordinates) obj;
+			return c.equals(o.c) && col == o.col;
 		}
 	}
 	
@@ -45,9 +92,15 @@ public class KeyboardImage extends Component {
 	private BufferedImage backgroundImage;
 	private Map<Color, BufferedImage> colorImages;
 	private Dimension imageSize;
-	private LinkedList<ColoredChar> chars2color = new LinkedList<>();
+	private LinkedList<ColoredCoordinates> coordinates2color = new LinkedList<>();
 	
-	public KeyboardImage(String localeID, Color backgroundColor, Color... additionalColors) {
+	/**
+	 * Create a keyboard image for a keyboard of a specific locale.
+	 * @param localeID the locale of the keyboard
+	 * @param backgroundColor the standard (uncolored) color of the keyboard
+	 * @param additionalColors color in which keys should be highlighted
+	 */
+	public KeyboardImage(Locale localeID, Color backgroundColor, Color... additionalColors) {
 		keyMapper = new KeyMapper(localeID);
 		colorImages = new HashMap<>(additionalColors.length);
 		try {
@@ -61,15 +114,131 @@ public class KeyboardImage extends Component {
 		imageSize = new Dimension(backgroundImage.getWidth(), backgroundImage.getHeight());	
 	}
 	
-	public void colorChar(char c, Color color) {
-		chars2color.add(new ColoredChar(c, color));
+	/**
+	 * Color the key(s) that correspond to the specified character.
+	 * <p>This function may color more than one key, if a modifying key must be pressed in order
+	 * to type that character (e. g. for uppercase letters).
+	 * <p>If this function is called several times for the same character but for different colors,
+	 * the key(s) will be colored in the order of function calls. Typically, this will result in
+	 * the key(s) to be colored in the color of the last function call.
+	 * @param c the character for which the key(s) should be colored
+	 * @param color the color of the key(s)
+	 */
+	public void colorKey(char c, Color color) {
+		if(!colorImages.containsKey(color))
+			throw new RuntimeException("Specified color not in intialized color set.");
+		try {
+			Coordinates[] cos = keyMapper.getCoordinatesFor(c);
+			colorCoordinates(cos, color);
+		}
+		catch (NotInKeySetException exc) {
+			// Do not try to color a key that does not exist on the keyboard.
+		}
 	}
 	
-	public void removeChar(char c, Color color) {
-		chars2color.remove(new ColoredChar(c, color));
+	/**
+	 * Color the key(s) that correspond to the specified <code>KeyEvent</code>.
+	 * <p>This function may color more than one key, if a modifying key must be pressed in order
+	 * to type that character (e. g. for uppercase letters).
+	 * <p>If this function is called several times for the same character but for different colors,
+	 * the key(s) will be colored in the order of function calls. Typically, this will result in
+	 * the key(s) to be colored in the color of the last function call.
+	 * <p>Use this function to color individual modifier keys, as they cannot be specified as a
+	 * character.
+	 * @param e the KeyEvent for which the key(s) should be colored
+	 * @param color the color of the key(s)
+	 */
+	public void colorKey(KeyEvent e, Color color) {
+		if(!colorImages.containsKey(color))
+			throw new RuntimeException("Specified color not in intialized color set.");
+		try {
+			Coordinates[] cos = keyMapper.getCoordinatesFor(e);
+			colorCoordinates(cos, color);
+		}
+		catch (NotInKeySetException exc) {
+			// Do not try to color a key that does not exist on the keyboard.
+		}
 	}
 	
-	private static BufferedImage getImage(Color c, String localeID) throws IOException {
+	private void colorCoordinates(Coordinates[] cos, Color color) {
+		for(Coordinates co : cos) {
+			coordinates2color.add(new ColoredCoordinates(co, color));
+		}
+		repaint();
+	}
+	
+	/**
+	 * Do not color the key(s) that correspond to the specified character any longer.
+	 * <p>A call of this function only makes sense after a call to {@link #colorKey(char, Color)}
+	 * with the same arguments. It will then remove the color of the key(s) so that they will be
+	 * painted in the background color.
+	 * @param c the character for which the color of the key(s) should be removed
+	 * @param color the color of the key(s) that should be removed
+	 */
+	public void removeKeyColor(char c, Color color) {
+		try {
+			Coordinates[] cos = keyMapper.getCoordinatesFor(c);
+			removeCoordinates(cos, color);
+		}
+		catch (NotInKeySetException e) {
+			// Do not try to remove the color of a key that does not exist on the keyboard.
+		}
+	}
+	
+	/**
+	 * Do not color the key(s) that correspond to the specified <code>KeyEvent</code> any longer.
+	 * <p>A call of this function only makes sense after a call to {@link #colorKey(KeyEvent, Color)}
+	 * with the same arguments. It will then remove the color of the key(s) so that they will be
+	 * painted in the background color.
+	 * @param e the KeyEvent for which the color of the key(s) should be removed
+	 * @param color the color of the key(s) that should be removed
+	 */
+	public void removeKeyColor(KeyEvent e, Color color) {
+		try {
+			Coordinates[] cos = keyMapper.getCoordinatesFor(e);
+			removeCoordinates(cos, color);
+		}
+		catch (NotInKeySetException exc) {
+			// Do not try to remove the color of a key that does not exist on the keyboard.
+		}
+	}
+	
+	private void removeCoordinates(Coordinates[] cos, Color color) {
+		for(Coordinates co : cos) {
+			coordinates2color.remove(new ColoredCoordinates(co, color));
+		}
+		repaint();
+	}
+	
+	/**
+	 * Color the key(s) that correspond to the specified character for a certain time span.
+	 * This function can be used e.g. to let key(s) blink for a short time period.
+	 * @param c the character for which the key(s) should be colored
+	 * @param color the color of the key(s)
+	 * @param time the time span in milliseconds
+	 */
+	public void colorKeyBlink(char c, Color color, int time) {
+		colorKey(c, color);
+		Timer t = new Timer(time, evt -> removeKeyColor(c, color));
+		t.setRepeats(false);
+		t.start();
+	}
+	
+	/**
+	 * Color the key(s) that correspond to the specified <code>KeyEvent</code> for a certain time
+	 * span. This function can be used e.g. to let key(s) blink for a short time period.
+	 * @param e the character for which the key(s) should be colored
+	 * @param color the color of the key(s)
+	 * @param time the time span in milliseconds
+	 */
+	public void colorKeyBlink(KeyEvent e, Color color, int time) {
+		colorKey(e, color);
+		Timer t = new Timer(time, evt -> removeKeyColor(e, color));
+		t.setRepeats(false);
+		t.start();
+	}
+	
+	private static BufferedImage getImage(Color c, Locale localeID) throws IOException {
 		return ImageIO.read(KeyboardImage.class.getResourceAsStream(
 				"im_" + c.fileName + '_' + localeID + ".gif"));
 	}
@@ -82,18 +251,9 @@ public class KeyboardImage extends Component {
 	@Override
 	public void paint(Graphics g) {
 		g.drawImage(backgroundImage, 0, 0, null);
-		for(ColoredChar cc : chars2color) {
-			Coordinates[] coord;
-			try {
-				coord = keyMapper.getCoordinatesFor(cc.c);
-				for(Coordinates c: coord) {
-					g.drawImage(colorImages.get(cc.col), c.x1, c.y1, c.x2, c.y2,
-							c.x1, c.y1, c.x2, c.y2, null);
-				}
-			} catch (NotInKeySetException e) {
-				// char does not exist in key set: just do nothing
-			}
-
+		for(ColoredCoordinates cc : coordinates2color) {
+			g.drawImage(colorImages.get(cc.col), cc.c.x1, cc.c.y1, cc.c.x2, cc.c.y2,
+					cc.c.x1, cc.c.y1, cc.c.x2, cc.c.y2, null);
 		}
 	}
 

@@ -1,5 +1,12 @@
 package gui.keyboard;
 
+/**
+ * Coordinates of a rectangle: top left point (x1/y1) and bottom right point (x2/y2).
+ * 
+ * @author Lasse Osterhagen
+ *
+ */
+
 class Coordinates {
 	
 	int x1, y1, x2, y2;
@@ -13,6 +20,11 @@ class Coordinates {
 		this.y1 = y1;
 		this.x2 = x2;
 		this.y2 = y2;
+	}
+	
+	@Override
+	public String toString() {
+		return "[" + x1 + ',' + y1 + ',' + x2 + ',' + y2 + ']';
 	}
 	
 	@Override
