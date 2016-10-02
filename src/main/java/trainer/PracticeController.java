@@ -14,12 +14,12 @@ public class PracticeController extends Observable {
 		READY,
 		RUNNING,
 		REG_STOPPED, // regularly stopped
-		USER_STOPPED
+		USER_STOPPED // stopped by user
 	}
 	
 	public enum Event {
-		NEW_STATE,
-		LINE_CHANGE
+		STATE_CHANGED,
+		NEW_LINE
 	}
 	
 	private Exercise exercise;
@@ -118,7 +118,7 @@ public class PracticeController extends Observable {
 		if(lineCreator.hasNext()) {
 			line2 = lineCreator.create(maxLineLength);
 			lineMonitor.setLine(line1);
-			notifyObservers(Event.LINE_CHANGE);
+			notifyObservers(Event.NEW_LINE);
 		}
 		else {
 			line2 = "";
@@ -130,7 +130,7 @@ public class PracticeController extends Observable {
 		if(this.state != state) {
 			setChanged();
 			this.state = state;
-			notifyObservers(Event.NEW_STATE);
+			notifyObservers(Event.STATE_CHANGED);
 		}
 	}
 	

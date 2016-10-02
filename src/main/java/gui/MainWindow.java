@@ -7,8 +7,6 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Observable;
@@ -46,13 +44,13 @@ public class MainWindow extends JFrame implements Observer {
 	private LineDisplay line2 = new LineDisplay(MAX_LINE_LENGTH);
 	private JButton startButton;
 	private JButton stopButton;
-	private KeyMonitor keyMonitor;
+	private KeyTypedMonitor keyTypedMonitor;
 	private Timer timer = new Timer(1000, this::updateClock);
 	
 	private PracticeController pc;
 	private Exercise exercise;
 	
-	public void setExercise(Exercise exercise) {
+	void setExercise(Exercise exercise) {
 		this.exercise = exercise;
 		try {
 			resetExercise();
@@ -70,7 +68,7 @@ public class MainWindow extends JFrame implements Observer {
 	 * the practice, which might involve asking the user for stopping it.
 	 * @return true if there is no practice currently running.
 	 */
-	public boolean conditionalStopPractice() {
+	boolean conditionalStopPractice() {
 		if(pc == null) // PracticeController not initialized yet
 			return true;
 		PracticeController.State state = pc.getState();
@@ -106,7 +104,8 @@ public class MainWindow extends JFrame implements Observer {
 	private void resetExercise() throws ImplementationNotFound {
 		pc = new PracticeController(exercise, MAX_LINE_LENGTH);
 		pc.addObserver(this);
-		keyMonitor = new KeyMonitor();
+		pc.getLineMonitor().addObserver(this);
+		keyTypedMonitor = new KeyTypedMonitor(pc);
 	}
 	
 	private void resetLabels() {
@@ -235,33 +234,6 @@ public class MainWindow extends JFrame implements Observer {
 		setVisible(true);
 	}
 	
-	private class KeyMonitor extends KeyAdapter {
-		private LineMonitor lm = pc.getLineMonitor();
-		@Override
-		public void keyTyped(KeyEvent e) {
-			//start timer at first key press
-			if(pc.getState() == PracticeController.State.READY) {
-				pc.run();
-			}
-			char c = e.getKeyChar();
-			//correct typed char
-			if(lm.advanceIfCorrect(c)) {
-				line1.setHighlighted(lm.getPosition());
-				typedCharLabel.setText(Integer.toString(
-						pc.getPerformanceStats().getTotalPerformanceRate().getHits()));
-				actualizeTypedByMinLabel();
-			}
-			//wrong typed char
-			else {
-				line1.signalError();
-				faultsLabel.setText(Integer.toString(
-						pc.getPerformanceStats().getTotalPerformanceRate().getErrors()));
-			}
-			faultRateLabel.setText(Util.rateLabel(
-					pc.getPerformanceStats().getTotalPerformanceRate().getErrorRate()));
-		}
-	}
-	
 	private void actualizeTypedByMinLabel() {
 		typedByMinLabel.setText(Util.hitsPerMinLabel(
 				pc.getPerformanceStats().getTotalPerformanceRate().getHits(),
@@ -270,34 +242,57 @@ public class MainWindow extends JFrame implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		if(arg == PracticeController.Event.NEW_STATE) {
-			PracticeController.State state = pc.getState();
-			switch(state) {
-			case READY:
-				stopButton.setEnabled(true);
-				line1.addKeyListener(keyMonitor);
-				line1.requestFocusInWindow();
+
+		// React on events of LineMonitor
+		if(o instanceof LineMonitor) {
+			LineMonitor.Event evt = (LineMonitor.Event) arg;
+			switch(evt) {
+			case CORRECT:
+				line1.setHighlighted(pc.getLineMonitor().getPosition());
+				typedCharLabel.setText(Integer.toString(
+						pc.getPerformanceStats().getTotalPerformanceRate().getHits()));
+				actualizeTypedByMinLabel();
 				break;
-			case RUNNING:
-				timer.start();
-				break;
-			case REG_STOPPED: case USER_STOPPED:
-				line1.removeKeyListener(keyMonitor);
-				stopButton.setEnabled(false);
-				startButton.setEnabled(true);
-				timer.stop();
-				break;
-			default:
-				break;
+			case WRONG:
+				line1.signalError();
+				faultsLabel.setText(Integer.toString(
+						pc.getPerformanceStats().getTotalPerformanceRate().getErrors()));
 			}
-			if(state == PracticeController.State.REG_STOPPED)
-				// Call invokeLater to let the GUI be updated before the modal
-				// PracticeEndDlg window shows up.
-				SwingUtilities.invokeLater(() -> new PracticeEndDlg(this, pc));
+			faultRateLabel.setText(Util.rateLabel(
+					pc.getPerformanceStats().getTotalPerformanceRate().getErrorRate()));
 		}
-		else if(arg == PracticeController.Event.LINE_CHANGE) {
-			line1.setTextLine(pc.getLine1());
-			line2.setTextLine(pc.getLine2());
+		
+		// React on events of PracticeController
+		if(o instanceof PracticeController) {
+			if(arg == PracticeController.Event.STATE_CHANGED) {
+				PracticeController.State state = pc.getState();
+				switch(state) {
+				case READY:
+					stopButton.setEnabled(true);
+					line1.addKeyListener(keyTypedMonitor);
+					line1.requestFocusInWindow();
+					break;
+				case RUNNING:
+					timer.start();
+					break;
+				case REG_STOPPED: case USER_STOPPED:
+					line1.removeKeyListener(keyTypedMonitor);
+					stopButton.setEnabled(false);
+					startButton.setEnabled(true);
+					timer.stop();
+					break;
+				default:
+					break;
+				}
+				if(state == PracticeController.State.REG_STOPPED)
+					// Call invokeLater to let the GUI be updated before the modal
+					// PracticeEndDlg window shows up.
+					SwingUtilities.invokeLater(() -> new PracticeEndDlg(this, pc));
+			}
+			else if(arg == PracticeController.Event.NEW_LINE) {
+				line1.setTextLine(pc.getLine1());
+				line2.setTextLine(pc.getLine2());
+			}
 		}
 	}
 }
