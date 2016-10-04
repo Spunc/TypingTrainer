@@ -1,5 +1,6 @@
 package gui;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -12,6 +13,7 @@ import static gui.Util.getKeyCodeFromString;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class MainWinMenu {
 	
@@ -31,12 +33,19 @@ public class MainWinMenu {
 	private class MenuActionListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(mw.conditionalStopPractice())
-				switch (e.getActionCommand()) {
-				case "select":
+			switch (e.getActionCommand()) {
+			case "select":
+				if(mw.conditionalStopPractice()) {
 					Optional<Exercise> opEx = new SelectExerciseDlg(mw).showDialog();
 					opEx.ifPresent(ex-> mw.setExercise(ex));
 				}
+				break;
+			case "showKeyboard":
+				JCheckBoxMenuItem item = (JCheckBoxMenuItem) e.getSource();
+				if(item.isSelected())
+					System.out.println("Selected");
+					// insert mw.showKeyboard here
+			}
 		}
 	}
 	
@@ -47,13 +56,30 @@ public class MainWinMenu {
 		menu = new JMenu(getGUIText("exercise"));
 		menu.setMnemonic(getKeyCodeFromString(getGUIText("exerciseMnemonic")));
 		menuBar.add(menu);
+		addItem(menu, JMenuItem::new, "select", "selectMnemonic");
 		
-		addItem(menu, "select", "selectMnemonic");
+		// Second column
+		menu = new JMenu(getGUIText("keyboard"));
+		menu.setMnemonic(getKeyCodeFromString(getGUIText("keyboardMnemonic")));
+		menuBar.add(menu);
+		addItem(menu, JCheckBoxMenuItem::new, "showKeyboard", "showKeyboardMnemonic");
 	}
 	
-	private void addItem(JMenu menu, String commandKey, String mnemonicKey) {
-	// commands should be keys in guiText.properties
-		JMenuItem item = new JMenuItem(getGUIText(commandKey));
+	
+	/**
+	 * Adds a <code>JMenuItem</code> to a <code>JMenu</code> (which is a column of a
+	 * <code>JMenuBar</code>
+	 * @param menu the menu column to which the item should be added
+	 * @param sp Supplier for the kind of JMenuItem to be created
+	 * @param commandKey fulfills two tasks: First, it is the key for I18n of the item text
+	 * (<i>guiText.properties</i>); second, it serves as key in the switch statement of the
+	 * <code>MenuActionListener</code>.
+	 * @param mnemonicKey key for I18n of the mnemonic
+	 */
+	private <T extends JMenuItem>
+		void addItem(JMenu menu, Supplier<T> sp, String commandKey, String mnemonicKey) {
+		T item = sp.get();
+		item.setText(getGUIText(commandKey));
 		item.setMnemonic(getKeyCodeFromString(getGUIText(mnemonicKey)));
 		item.setActionCommand(commandKey);
 		item.addActionListener(actionListener);

@@ -58,6 +58,20 @@ import gui.keyboard.KeyMapper.NotInKeySetException;
 public class KeyboardImage extends Component {
 	
 	/**
+	 * Checks whether the image files for the specified <code>Locale</code> exists.
+	 * 
+	 * <p>The current implementation only checks if the black and white image for
+	 * this <code>Locale</code> can be found.
+	 * 
+	 * @param localeID the Locale
+	 * @return true if the image files for the keyboard layout exist
+	 */
+	public static boolean exists(Locale localeID) {
+		String bwImageFileName = "im_bw_" + localeID + ".gif";
+		return KeyboardImage.class.getResource(bwImageFileName) != null;
+	}
+	
+	/**
 	 * Colors for keys
 	 */
 	public enum Color {
