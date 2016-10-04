@@ -1,7 +1,5 @@
 package trainer;
 
-import java.util.Observable;
-
 /**
  * This class checks the correctness of the typist's typing behavior, thereby
  * monitoring the progress of the practice unit.
@@ -15,12 +13,7 @@ import java.util.Observable;
  *
  */
 
-public class LineMonitor extends Observable {
-	
-	public enum Event {
-		CORRECT,
-		WRONG
-	}
+public class LineMonitor {
 	
 	private String line;
 	private int position;
@@ -67,7 +60,6 @@ public class LineMonitor extends Observable {
 	 * @return true if typed char was correct, otherwise false
 	 */
 	public boolean advanceIfCorrect(char c) {
-		setChanged();
 		if(!(pc.getState() == PracticeController.State.RUNNING))
 			throw new IllegalStateException("Illegal state: " + pc.getState());
 		if(compareCurrentChar(c)) {
@@ -79,12 +71,10 @@ public class LineMonitor extends Observable {
 			else {
 				++position;
 			}
-			this.notifyObservers(Event.CORRECT);
 			return true;
 		}
 		performanceStats.addError(getCurrentChar());
 		performanceStats.addWrongTyped(c);
-		this.notifyObservers(Event.WRONG);
 		return false;
 	}
 }

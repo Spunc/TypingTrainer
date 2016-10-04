@@ -1,7 +1,11 @@
 package gui;
 
+import java.awt.Component;
 import java.util.ResourceBundle;
 
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 public class Util {
@@ -60,6 +64,23 @@ public class Util {
 	    textArea.setOpaque(false);  
 	    textArea.setFocusable(false);  
 	    return textArea;  
+	}
+	
+	/**
+	 * Surround a {@link java.awt.Component} with a border 
+	 * @param c the Component to be wrapped
+	 * @param top the width of the top
+	 * @param left the width of the left side
+	 * @param bottom the width of the bottom
+	 * @param right the width of the right side
+	 * @return the wrapped Component
+	 */
+	public static JComponent wrapInEmtpyBorder(Component c,
+			int top, int left, int bottom, int right) {
+		JPanel borderedPanel = new JPanel();
+		borderedPanel.setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
+		borderedPanel.add(c);
+		return borderedPanel;
 	}
 	
 }

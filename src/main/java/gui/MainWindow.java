@@ -3,17 +3,19 @@ package gui;
 import static gui.Util.getGUIText;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Optional;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -23,15 +25,16 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
 
+import gui.keyboard.Keyboard;
 import persistence.DbAccess;
+import sun.awt.im.InputContext;
 import trainer.Exercise;
-import trainer.LineMonitor;
 import trainer.PracticeController;
 import trainer.lineCreators.LineCreatorFactory.ImplementationNotFound;
 
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame implements Observer {
-
+	
 	private static final int MAX_LINE_LENGTH = 60;
 	
 	private JLabel practiceUnitLabel = new JLabel("keine gewählt", JLabel.RIGHT);
@@ -40,8 +43,11 @@ public class MainWindow extends JFrame implements Observer {
 	private JLabel timeLabel = new JLabel("00:00", JLabel.RIGHT);
 	private JLabel faultRateLabel = new JLabel("0,00 %", JLabel.RIGHT);
 	private JLabel typedByMinLabel = new JLabel("0", JLabel.RIGHT);
+	private JPanel middlePanel;
 	private ColorLineDisplay line1 = new ColorLineDisplay(MAX_LINE_LENGTH);
 	private LineDisplay line2 = new LineDisplay(MAX_LINE_LENGTH);
+	private Optional<Keyboard> keyboard;
+	private JPanel keyboardPanel;
 	private JButton startButton;
 	private JButton stopButton;
 	private KeyTypedMonitor keyTypedMonitor;
@@ -60,6 +66,22 @@ public class MainWindow extends JFrame implements Observer {
 		startButton.setEnabled(true);
 		practiceUnitLabel.setText(Util.getExerciseNameText(exercise.getName(),
 				exercise.getExerciseGroup().getId()));
+	}
+	
+	void addKeyboard() {
+		Locale currentLocale = InputContext.getInstance().getLocale();
+		keyboard = Optional.of(new Keyboard(currentLocale));
+		keyboardPanel = new JPanel();
+		keyboardPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+		keyboardPanel.add(keyboard.get().getKeyboardComponent());
+		middlePanel.add(keyboardPanel);
+		pack();
+	}
+	
+	void removeKeyboard() {
+		middlePanel.remove(keyboardPanel);
+		keyboard = Optional.empty();
+		pack();
 	}
 	
 	/**
@@ -104,8 +126,8 @@ public class MainWindow extends JFrame implements Observer {
 	private void resetExercise() throws ImplementationNotFound {
 		pc = new PracticeController(exercise, MAX_LINE_LENGTH);
 		pc.addObserver(this);
-		pc.getLineMonitor().addObserver(this);
 		keyTypedMonitor = new KeyTypedMonitor(pc);
+		keyTypedMonitor.addObserver(this);
 	}
 	
 	private void resetLabels() {
@@ -172,13 +194,6 @@ public class MainWindow extends JFrame implements Observer {
 		return panel;
 	}
 	
-	private JPanel getLineDisplayPanel() {
-		JPanel panel = new JPanel();
-		panel.add(line1);
-		panel.add(line2);
-		return panel;
-	}
-	
 	private void stopPractice() {
 		stopButton.setEnabled(false);
 		pc.userStop();
@@ -224,10 +239,13 @@ public class MainWindow extends JFrame implements Observer {
 				}
 			}	
 		});
-		setPreferredSize(new Dimension(750, 350));
 		setJMenuBar(new MainWinMenu(this).getMenuBar());
 		add(getLabelPanel(), BorderLayout.PAGE_START);
-		add(getLineDisplayPanel(), BorderLayout.CENTER);
+		middlePanel = new JPanel();
+		middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.PAGE_AXIS));
+		middlePanel.add(Util.wrapInEmtpyBorder(line1, 5, 5, 1, 5));
+		middlePanel.add(Util.wrapInEmtpyBorder(line2, 1, 5, 5, 5));
+		add(middlePanel, BorderLayout.CENTER);
 		add(getButtonPanel(), BorderLayout.PAGE_END);
 		pack();
 		setLocationRelativeTo(null);
@@ -243,23 +261,22 @@ public class MainWindow extends JFrame implements Observer {
 	@Override
 	public void update(Observable o, Object arg) {
 
-		// React on events of LineMonitor
-		if(o instanceof LineMonitor) {
-			LineMonitor.Event evt = (LineMonitor.Event) arg;
-			switch(evt) {
-			case CORRECT:
+		// React on events of KeyTypedMonitor
+		if(o instanceof KeyTypedMonitor) {
+			KeyTypedEvent kte = (KeyTypedEvent) arg;
+			if(kte.correct) {
 				line1.setHighlighted(pc.getLineMonitor().getPosition());
 				typedCharLabel.setText(Integer.toString(
 						pc.getPerformanceStats().getTotalPerformanceRate().getHits()));
 				actualizeTypedByMinLabel();
-				break;
-			case WRONG:
+			}
+			else {
 				line1.signalError();
 				faultsLabel.setText(Integer.toString(
 						pc.getPerformanceStats().getTotalPerformanceRate().getErrors()));
-			}
 			faultRateLabel.setText(Util.rateLabel(
 					pc.getPerformanceStats().getTotalPerformanceRate().getErrorRate()));
+			}
 		}
 		
 		// React on events of PracticeController

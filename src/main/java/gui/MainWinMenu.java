@@ -43,8 +43,9 @@ public class MainWinMenu {
 			case "showKeyboard":
 				JCheckBoxMenuItem item = (JCheckBoxMenuItem) e.getSource();
 				if(item.isSelected())
-					System.out.println("Selected");
-					// insert mw.showKeyboard here
+					mw.addKeyboard();
+				else
+					mw.removeKeyboard();
 			}
 		}
 	}
