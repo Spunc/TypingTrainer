@@ -5,12 +5,12 @@ import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 
-import gui.KeyTypedEvent;
+import trainer.KeyTypedEvent;
 import trainer.LineMonitor;
 
 public class Keyboard implements Observer {
 	
-	private static final int blinkTime = 300;
+	private static final int blinkTime = 200;
 	private LineMonitor lineMonitor;
 	private KeyboardImage image;
 	
@@ -26,9 +26,11 @@ public class Keyboard implements Observer {
 	
 	public void setLineMonitor(LineMonitor lineMonitor) {
 		this.lineMonitor = lineMonitor;
+		image.colorKey(lineMonitor.getCurrentChar(), KeyboardImage.Color.YELLOW);
 	}
 	
 	public void removeLineMonitor() {
+		image.decolorAll();
 		this.lineMonitor = null;
 	}
 
@@ -37,6 +39,7 @@ public class Keyboard implements Observer {
 		assert lineMonitor != null: "LineMonitor is null.";
 		KeyTypedEvent kte = (KeyTypedEvent) arg;
 		if(kte.correct) {
+			image.decolorAll();
 			image.colorKeyBlink(kte.c, KeyboardImage.Color.GREEN, blinkTime);
 			image.colorKey(lineMonitor.getCurrentChar(), KeyboardImage.Color.YELLOW);
 		}

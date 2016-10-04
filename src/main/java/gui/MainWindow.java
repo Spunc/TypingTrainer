@@ -29,6 +29,8 @@ import gui.keyboard.Keyboard;
 import persistence.DbAccess;
 import sun.awt.im.InputContext;
 import trainer.Exercise;
+import trainer.KeyTypedEvent;
+import trainer.LineMonitor;
 import trainer.PracticeController;
 import trainer.lineCreators.LineCreatorFactory.ImplementationNotFound;
 
@@ -46,11 +48,11 @@ public class MainWindow extends JFrame implements Observer {
 	private JPanel middlePanel;
 	private ColorLineDisplay line1 = new ColorLineDisplay(MAX_LINE_LENGTH);
 	private LineDisplay line2 = new LineDisplay(MAX_LINE_LENGTH);
-	private Optional<Keyboard> keyboard;
+	private Optional<Keyboard> keyboard = Optional.empty();
 	private JPanel keyboardPanel;
 	private JButton startButton;
 	private JButton stopButton;
-	private KeyTypedMonitor keyTypedMonitor;
+	private LineMonitor lineMonitor;
 	private Timer timer = new Timer(1000, this::updateClock);
 	
 	private PracticeController pc;
@@ -76,9 +78,30 @@ public class MainWindow extends JFrame implements Observer {
 		keyboardPanel.add(keyboard.get().getKeyboardComponent());
 		middlePanel.add(keyboardPanel);
 		pack();
+		if( pc != null && (pc.getState() == PracticeController.State.READY ||
+				pc.getState() == PracticeController.State.RUNNING) )
+			registerKeyboard();
+	}
+	
+	private void registerKeyboard() {
+		keyboard.ifPresent(k -> {
+			k.setLineMonitor(lineMonitor);
+			lineMonitor.addObserver(k);
+		});
+	}
+	
+	private void deregisterKeyboard() {
+		keyboard.ifPresent(k -> {
+			if(pc != null) {
+				// pc is null, if no exercise has been loaded
+				lineMonitor.deleteObserver(k);
+				k.removeLineMonitor();
+			}
+		});
 	}
 	
 	void removeKeyboard() {
+		deregisterKeyboard();
 		middlePanel.remove(keyboardPanel);
 		keyboard = Optional.empty();
 		pack();
@@ -126,8 +149,8 @@ public class MainWindow extends JFrame implements Observer {
 	private void resetExercise() throws ImplementationNotFound {
 		pc = new PracticeController(exercise, MAX_LINE_LENGTH);
 		pc.addObserver(this);
-		keyTypedMonitor = new KeyTypedMonitor(pc);
-		keyTypedMonitor.addObserver(this);
+		lineMonitor = pc.getLineMonitor();
+		lineMonitor.addObserver(this);
 	}
 	
 	private void resetLabels() {
@@ -262,10 +285,10 @@ public class MainWindow extends JFrame implements Observer {
 	public void update(Observable o, Object arg) {
 
 		// React on events of KeyTypedMonitor
-		if(o instanceof KeyTypedMonitor) {
+		if(o instanceof LineMonitor) { // change to true reference
 			KeyTypedEvent kte = (KeyTypedEvent) arg;
 			if(kte.correct) {
-				line1.setHighlighted(pc.getLineMonitor().getPosition());
+				line1.setHighlighted(lineMonitor.getPosition());
 				typedCharLabel.setText(Integer.toString(
 						pc.getPerformanceStats().getTotalPerformanceRate().getHits()));
 				actualizeTypedByMinLabel();
@@ -284,21 +307,23 @@ public class MainWindow extends JFrame implements Observer {
 			if(arg == PracticeController.Event.STATE_CHANGED) {
 				PracticeController.State state = pc.getState();
 				switch(state) {
+				case INIT:
+					break;
 				case READY:
 					stopButton.setEnabled(true);
-					line1.addKeyListener(keyTypedMonitor);
+					line1.addKeyListener(lineMonitor);
 					line1.requestFocusInWindow();
+					registerKeyboard();
 					break;
 				case RUNNING:
 					timer.start();
 					break;
 				case REG_STOPPED: case USER_STOPPED:
-					line1.removeKeyListener(keyTypedMonitor);
+					line1.removeKeyListener(lineMonitor);
 					stopButton.setEnabled(false);
 					startButton.setEnabled(true);
 					timer.stop();
-					break;
-				default:
+					deregisterKeyboard();
 					break;
 				}
 				if(state == PracticeController.State.REG_STOPPED)

@@ -110,6 +110,8 @@ public class PracticeController extends Observable {
 	public void newLine() {
 		// line1 shows the last row that the lineCreator can provide
 		if(isLastRow) {
+			lineMonitor.setLine("\0");
+				// Use the zero char as placeholder, so that a keyboard won't display anything
 			regStop();
 			return;
 		}

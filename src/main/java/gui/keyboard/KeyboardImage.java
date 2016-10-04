@@ -225,6 +225,14 @@ public class KeyboardImage extends Component {
 	}
 	
 	/**
+	 * Decolor all colored keys.
+	 */
+	public void decolorAll() {
+		coordinates2color.clear();
+		repaint();
+	}
+	
+	/**
 	 * Color the key(s) that correspond to the specified character for a certain time span.
 	 * This function can be used e.g. to let key(s) blink for a short time period.
 	 * @param c the character for which the key(s) should be colored

@@ -1,4 +1,4 @@
-package gui;
+package trainer;
 
 public class KeyTypedEvent {
 	

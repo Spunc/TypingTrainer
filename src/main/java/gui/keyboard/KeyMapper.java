@@ -64,7 +64,7 @@ import java.util.Set;
  * 	<li>alt</li>
  * 	<li>altgr</li>
  * </ol>
- * Notice that there is an optional entry <li>enter2</li> for the case that the enter key does
+ * Notice that there is an optional entry <i>enter2</i> for the case that the enter key does
  * not have a rectangular form and it must be represented with two rectangles.
  * 
  * <p>Last, the file <i>set_letters_lshift_xx_XX.txt</i> contains all letters (not separated by
