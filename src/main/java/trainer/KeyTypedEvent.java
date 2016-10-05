@@ -1,5 +1,17 @@
 package trainer;
 
+/**
+ * Data class that represents a key typed event during the execution of a training session.
+ * Holds:
+ * <ul>
+ * 	<li>the typed character</li>
+ * 	<li>the classification whether the typed character was correct</li>
+ * </ul>
+ * 
+ * @author Lasse Osterhagen
+ *
+ */
+
 public class KeyTypedEvent {
 	
 	/**
@@ -12,6 +24,11 @@ public class KeyTypedEvent {
 	 */
 	public boolean correct;
 	
+	/**
+	 * Create a KeyTyedEvent.
+	 * @param c the typed character
+	 * @param correct the classification whether the typed character was correct
+	 */
 	public KeyTypedEvent(char c, boolean correct) {
 		this.c = c;
 		this.correct = correct;

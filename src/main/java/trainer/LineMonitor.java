@@ -8,6 +8,8 @@ import java.util.Observable;
  * This class checks the correctness of the typist's typing behavior, thereby
  * monitoring the progress of the practice unit.
  * 
+ * <p>The class depends on a <code>PracticeController</code> that manages practice execution.
+ * 
  * @author Lasse Osterhagen
  *
  */
@@ -18,7 +20,6 @@ public class LineMonitor extends Observable implements KeyListener {
 	private int position;
 	private PracticeController pc;
 	private PerformanceStats performanceStats;
-
 
 	public LineMonitor(PracticeController pc) {
 		this.pc = pc;
