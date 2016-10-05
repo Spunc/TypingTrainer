@@ -27,7 +27,7 @@ import javax.swing.WindowConstants;
 
 import gui.keyboard.Keyboard;
 import persistence.DbAccess;
-import sun.awt.im.InputContext;
+import java.awt.im.InputContext;
 import trainer.Exercise;
 import trainer.KeyTypedEvent;
 import trainer.LineMonitor;
