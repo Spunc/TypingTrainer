@@ -1,6 +1,5 @@
 package gui.keyboard;
 
-import java.util.Locale;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -13,10 +12,11 @@ import javax.swing.SwingUtilities;
  */
 public class Man_KeyboardImageTest {
 	
-	private KeyboardImage keyboardImage = new KeyboardImage(Locale.GERMANY,
-			KeyboardImage.Color.BLACK_WHITE, KeyboardImage.Color.YELLOW, KeyboardImage.Color.GREEN);
-	
 	public void initAndShowGUI() {
+		KeyboardImage keyboardImage = new KeyboardImage("DE_qw",
+				KeyboardImage.Color.BLACK_WHITE,
+				KeyboardImage.Color.YELLOW,
+				KeyboardImage.Color.GREEN);
 		keyboardImage.colorKey('L', KeyboardImage.Color.YELLOW);
 		keyboardImage.colorKey('g', KeyboardImage.Color.GREEN);
 		keyboardImage.colorKey('\n', KeyboardImage.Color.GREEN);

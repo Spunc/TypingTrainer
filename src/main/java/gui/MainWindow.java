@@ -8,7 +8,6 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Optional;
@@ -27,7 +26,6 @@ import javax.swing.WindowConstants;
 
 import gui.keyboard.Keyboard;
 import persistence.DbAccess;
-import java.awt.im.InputContext;
 import trainer.Exercise;
 import trainer.KeyTypedEvent;
 import trainer.LineMonitor;
@@ -71,8 +69,7 @@ public class MainWindow extends JFrame implements Observer {
 	}
 	
 	void addKeyboard() {
-		Locale currentLocale = InputContext.getInstance().getLocale();
-		keyboard = Optional.of(new Keyboard(currentLocale));
+		keyboard = Optional.of(new Keyboard("DE_qw"));
 		keyboardPanel = new JPanel();
 		keyboardPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 		keyboardPanel.add(keyboard.get().getKeyboardComponent());

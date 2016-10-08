@@ -1,7 +1,6 @@
 package gui.keyboard;
 
 import java.awt.Component;
-import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -35,10 +34,10 @@ public class Keyboard implements Observer {
 	
 	/**
 	 * Create a Keyboard with the locale specific layout.
-	 * @param localeID the Locale of the keyboard layout
+	 * @param layoutID the Locale of the keyboard layout
 	 */
-	public Keyboard(Locale localeID) {
-		image = new KeyboardImage(localeID, KeyboardImage.Color.BLACK_WHITE,
+	public Keyboard(String layoutID) {
+		image = new KeyboardImage(layoutID, KeyboardImage.Color.BLACK_WHITE,
 				KeyboardImage.Color.GREEN, KeyboardImage.Color.YELLOW,
 				KeyboardImage.Color.RED);
 	}

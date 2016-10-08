@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import java.awt.TextField;
 import java.awt.event.KeyEvent;
-import java.util.Locale;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,8 +25,8 @@ public class KeyMapper_deDE_Test {
 	private KeyMapper km;
 	
 	@Before
-	public void createKeyMapperDE() {
-		km = new KeyMapper(Locale.GERMANY);
+	public void createKeyMapperDE() throws LayoutNotFoundException {
+		km = new KeyMapper("DE_qw");
 	}
 	
 	/*

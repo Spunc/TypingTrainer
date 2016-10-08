@@ -6,9 +6,9 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
@@ -23,9 +23,9 @@ import gui.keyboard.KeyMapper.NotInKeySetException;
  * color.
  * 
  * <p>This class needs separate .gif image files that are located in this package
- * (<i>gui.keyboard</i>) for every color and every locale. The file names always end with the code
- * that belongs to the <code>Locale</code> (e. g. <i>en_UK</i>), before the file extension
- * <i>.gif</i> is appended:
+ * (<i>gui.keyboard</i>) for every color and every keyboard layout. The file names always end
+ * with the layout id that belongs to the keyboard layout (e. g. <i>DE_qw</i>), before the file
+ * extension <i>.gif</i> is appended:
  * 
  * <table summary="Keyboard image files">
  * 	<tr>
@@ -56,20 +56,6 @@ import gui.keyboard.KeyMapper.NotInKeySetException;
 
 @SuppressWarnings("serial")
 public class KeyboardImage extends Component {
-	
-	/**
-	 * Checks whether the image files for the specified <code>Locale</code> exists.
-	 * 
-	 * <p>The current implementation only checks if the black and white image for
-	 * this <code>Locale</code> can be found.
-	 * 
-	 * @param localeID the Locale
-	 * @return true if the image files for the keyboard layout exist
-	 */
-	public static boolean exists(Locale localeID) {
-		String bwImageFileName = "im_bw_" + localeID + ".gif";
-		return KeyboardImage.class.getResource(bwImageFileName) != null;
-	}
 	
 	/**
 	 * Colors for keys
@@ -110,20 +96,20 @@ public class KeyboardImage extends Component {
 	
 	/**
 	 * Create a keyboard image for a keyboard of a specific locale.
-	 * @param localeID the locale of the keyboard
+	 * @param layoutID the id of the keyboard layout
 	 * @param backgroundColor the standard (uncolored) color of the keyboard
 	 * @param additionalColors color in which keys should be highlighted
 	 */
-	public KeyboardImage(Locale localeID, Color backgroundColor, Color... additionalColors) {
-		keyMapper = new KeyMapper(localeID);
+	public KeyboardImage(String layoutID, Color backgroundColor, Color... additionalColors) {
+		keyMapper = new KeyMapper(layoutID);
 		colorImages = new HashMap<>(additionalColors.length);
 		try {
-			backgroundImage = getImage(backgroundColor, localeID);
+			backgroundImage = getImage(backgroundColor, layoutID);
 			for(Color c : additionalColors) {
-				colorImages.put(c, getImage(c, localeID));
+				colorImages.put(c, getImage(c, layoutID));
 			}
 		} catch (IOException e) {
-			throw new RuntimeException("Missing image file.", e);
+			throw new RuntimeException(e);
 		}
 		imageSize = new Dimension(backgroundImage.getWidth(), backgroundImage.getHeight());	
 	}
@@ -260,9 +246,13 @@ public class KeyboardImage extends Component {
 		t.start();
 	}
 	
-	private static BufferedImage getImage(Color c, Locale localeID) throws IOException {
-		return ImageIO.read(KeyboardImage.class.getResourceAsStream(
-				"im_" + c.fileName + '_' + localeID + ".gif"));
+	private static BufferedImage getImage(Color c, String layoutID) throws IOException {
+		String sourceFileName = "im_" + c.fileName + '_' + layoutID + ".gif";
+		try(InputStream is = KeyboardImage.class.getResourceAsStream(sourceFileName)) {
+			if(is ==  null)
+				throw new RuntimeException("Missing resource: " + sourceFileName);
+			return ImageIO.read(is);
+		}
 	}
 	
 	@Override
