@@ -20,6 +20,10 @@ public class Util {
 		return textBundle.getString(key);
 	}
 	
+	public static String getKeyboardLayoutText(String key) {
+		return ResourceBundle.getBundle("txtBundles.kbLayoutText").getString(key);
+	}
+	
 	/**
 	 * I18n the name of an <tt>Exercise</tt>. The name will be internationalized, if it is not
 	 * a user defined <tt>Exercise</tt>.

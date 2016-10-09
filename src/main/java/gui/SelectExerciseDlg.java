@@ -77,9 +77,9 @@ public class SelectExerciseDlg {
 //		((JComponent) dialog.getContentPane()).setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
-		mainPanel.add(getComboBox(), BorderLayout.CENTER);
+		mainPanel.add(getComboBox());
 		mainPanel.add(getTableScrollPane());
-		dialog.add(mainPanel);
+		dialog.add(mainPanel, BorderLayout.CENTER);
 		dialog.add(getButtonPanel(), BorderLayout.SOUTH);
 		dialog.pack();
 		dialog.setLocationRelativeTo(parent);

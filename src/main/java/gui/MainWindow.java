@@ -68,8 +68,8 @@ public class MainWindow extends JFrame implements Observer {
 				exercise.getExerciseGroup().getId()));
 	}
 	
-	void addKeyboard() {
-		keyboard = Optional.of(new Keyboard("DE_qw"));
+	void addKeyboard(String layout) {
+		keyboard = Optional.of(new Keyboard(layout));
 		keyboardPanel = new JPanel();
 		keyboardPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 		keyboardPanel.add(keyboard.get().getKeyboardComponent());

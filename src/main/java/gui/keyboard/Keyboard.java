@@ -1,6 +1,9 @@
 package gui.keyboard;
 
 import java.awt.Component;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -87,6 +90,17 @@ public class Keyboard implements Observer {
 		}
 		else
 			image.colorKeyBlink(kte.c, KeyboardImage.Color.RED, blinkTime);
+	}
+	
+	public static String[] getAvailableLayouts() {
+		try(BufferedReader r = new BufferedReader(
+				new InputStreamReader(Keyboard.class.getResourceAsStream("impl_layouts.txt")))) {
+			return r.lines().toArray(s -> new String[s]);
+			
+		}
+		catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

@@ -32,8 +32,8 @@ public class MainWinMenu {
 	
 	private class MenuActionListener implements ActionListener {
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			switch (e.getActionCommand()) {
+		public void actionPerformed(ActionEvent event) {
+			switch (event.getActionCommand()) {
 			case "select":
 				if(mw.conditionalStopPractice()) {
 					Optional<Exercise> opEx = new SelectExerciseDlg(mw).showDialog();
@@ -41,9 +41,19 @@ public class MainWinMenu {
 				}
 				break;
 			case "showKeyboard":
-				JCheckBoxMenuItem item = (JCheckBoxMenuItem) e.getSource();
+				JCheckBoxMenuItem item = (JCheckBoxMenuItem) event.getSource();
 				if(item.isSelected()) {
-					mw.addKeyboard();
+					String[] layouts = gui.keyboard.Keyboard.getAvailableLayouts();
+					Optional<String> selection =
+							new SelectListDlg<String>(
+									mw,
+									getGUIText("selectKeyboardLayout"),
+									layouts,
+									e -> Util.getKeyboardLayoutText(e)).show();
+					if(selection.isPresent())
+						mw.addKeyboard(selection.get());
+					else
+						item.setSelected(false);
 				}
 				else
 					mw.removeKeyboard();
