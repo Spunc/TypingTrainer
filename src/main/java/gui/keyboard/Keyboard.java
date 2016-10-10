@@ -94,7 +94,8 @@ public class Keyboard implements Observer {
 	
 	public static String[] getAvailableLayouts() {
 		try(BufferedReader r = new BufferedReader(
-				new InputStreamReader(Keyboard.class.getResourceAsStream("impl_layouts.txt")))) {
+				new InputStreamReader(Keyboard.class.getResourceAsStream("impl_layouts.txt"),
+						persistence.Constants.PROJECT_CHARSET))) {
 			return r.lines().toArray(s -> new String[s]);
 			
 		}

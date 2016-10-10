@@ -42,7 +42,8 @@ public class CreateInitialTables {
 	
 	public static void createTables(String path2DB) {
 		try(InputStreamReader r = new InputStreamReader(
-				CreateInitialTables.class.getResourceAsStream("fillTablesScript.txt"))) {
+				CreateInitialTables.class.getResourceAsStream("fillTablesScript.txt"),
+				Constants.PROJECT_CHARSET)) {
 			db.connect(path2DB);
 			makeTables();
 			FillTableParser ftp = new FillTableParser(db);

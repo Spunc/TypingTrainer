@@ -76,7 +76,7 @@ import java.util.Set;
  */
 public class KeyMapper {
 	
-	private static final Charset CHARSET = Charset.forName("UTF-8");
+	private static final Charset CHARSET = persistence.Constants.PROJECT_CHARSET;
 	private Set<Character> lShiftLetters = new HashSet<>();
 	private Map<Character, Coordinates> letters = new HashMap<>();
 	private Map<Character, Coordinates> noShift = new HashMap<>();
