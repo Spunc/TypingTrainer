@@ -25,7 +25,13 @@ will follow.
   * Create your own exercises
   * Create a plug-in by using the [ServiceLoader API](https://docs.oracle.com/javase/tutorial/ext/basics/spi.html) to provide alternative text creation behaviours
 
-### Screenshot
+### Screenshots
 
-![Screenshot](https://raw.githubusercontent.com/Spunc/TypingTrainer/master/github_doc_resources/TypeWriteTrainer.png)
+![Main window](https://raw.githubusercontent.com/Spunc/TypingTrainer/master/github_doc_resources/MainWindow.png)
 
+![Typing statistics](https://raw.githubusercontent.com/Spunc/TypingTrainer/master/github_doc_resources/CharStats.png)
+
+![Training progress: errors](https://raw.githubusercontent.com/Spunc/TypingTrainer/master/github_doc_resources/Progress_errors.png)
+ 
+![Training progress: speed](https://raw.githubusercontent.com/Spunc/TypingTrainer/master/github_doc_resources/Progress_speed.png)
+ 
