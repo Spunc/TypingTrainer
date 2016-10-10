@@ -41,8 +41,8 @@ public class StartEnd {
 	 * </ul>
 	 * <p>Allowed command line arguments:
 	 * <ul>
-	 * 	<li>Uninstall - uninstall the application</li>
-	 * 	<li>Force - in combination with uninstall; uninstalls without prompting for confirmation</li>
+	 * 	<li>uninstall - uninstall the application</li>
+	 * 	<li>force - in combination with uninstall; uninstalls without prompting for confirmation</li>
 	 * </ul>
 	 * <p>Tasks are executed in the following steps:
 	 * <ol>

@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import trainer.PerformanceStats;
 import trainer.lineCreators.LineCreatorFactory.ImplementationNotFound;
 
 public class GenericWordLineCreatorTest {
@@ -17,6 +18,12 @@ public class GenericWordLineCreatorTest {
 	public void testRandLangWordCreator() throws ImplementationNotFound {
 		testLineCreator(LineCreatorFactory.getLineCreator("GENERIC_RAND_LANG",
 				"abcABC.", null));
+	}
+	
+	@Test
+	public void testAdaptRandWordCreator() throws ImplementationNotFound {
+		testLineCreator(LineCreatorFactory.getLineCreator("ADAPT_RAND", "abcde",
+				new PerformanceStats()));
 	}
 	
 	public void testLineCreator(LineCreator l) {

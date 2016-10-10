@@ -4,7 +4,7 @@ import java.util.Random;
 import java.util.stream.IntStream;
 
 /**
- * This class creates words of a predefined length by randomly
+ * This class creates words of a specified length by randomly
  * choosing chars from the provided charSet.
  * 
  * @author Lasse Osterhagen

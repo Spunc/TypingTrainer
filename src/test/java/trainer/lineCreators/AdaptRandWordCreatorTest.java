@@ -9,7 +9,6 @@ import trainer.PerformanceStats;
 
 public class AdaptRandWordCreatorTest {
 	
-	private final int adaptFactor = 8;
 	private final String charSet = "ab";
 	private PerformanceStats ps;
 	private AdaptRandWordCreator arwc;
@@ -17,7 +16,7 @@ public class AdaptRandWordCreatorTest {
 	@Before
 	public void setUp() {
 		ps = new PerformanceStats();
-		arwc = new AdaptRandWordCreator(charSet, ps, adaptFactor);
+		arwc = new AdaptRandWordCreator(charSet, ps);
 	}
 	
 	/**
@@ -39,11 +38,10 @@ public class AdaptRandWordCreatorTest {
 	@Test
 	public void testCreateWithMaxErrorRate() {
 		ps.addError('a'); //error rate for a is 1
-		final double bExpectedPercentage = 1-(adaptFactor+1.0)/(adaptFactor+2.0);
-		/* With an error rate of 1 and an adaptFactor being 8, 1*8 additional 'a's
-		 * will be appended to the adapt char set. That means, the ratio of
-		 * 'a' to 'b' will be 9:1 or in percentage: the created word should consists
-		 * of 90 % 'a's and 10 % 'b's
+		final double bExpectedPercentage = 1/(1+AdaptRandWordCreator.ADAPT_VAL/charSet.length());
+		/* With an error rate of 1, AdaptRandWordCreator.ADAPT_VAL/charSet.length() additional
+		 * 'a's will be appended to original char set to create the adapt char set. This changes
+		 * the ratio of 'a' to 'b' from 1:1 to 1:(1+AdaptRandWordCreator.ADAPT_VAL/charSet.length()).
 		 */
 		eval_b_Percentage(bExpectedPercentage);
 	}

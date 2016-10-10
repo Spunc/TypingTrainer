@@ -2,8 +2,6 @@ package trainer.lineCreators;
 
 import java.util.ResourceBundle;
 
-import trainer.PerformanceStats;
-
 /**
  * <p><tt>LineCreator</tt>s that are not provided by the plug-in mechanism
  * ({@link LineCreatorProviderPlugin}), but reside in classes that belong to
@@ -24,9 +22,6 @@ public abstract class LocalLineCreatorProvider implements LineCreatorProvider {
 	public LocalLineCreatorProvider(String descriptionKey) {
 		this.descriptionKey = descriptionKey;
 	}
-
-	@Override
-	public abstract LineCreator getLineCreator(String param, PerformanceStats ps);
 
 	@Override
 	public String description() {

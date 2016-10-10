@@ -22,10 +22,13 @@ public class LineCreatorFactory {
 		return Collections.unmodifiableMap(Stream.of(
 		new SimpleEntry<>("GENERIC_RAND", new GenericWordLineCreatorProvider("GENERIC_RAND",
 			(p,s)->new RandWordCreator(p), Distributions.rightSkewed)),
-		new SimpleEntry<>("GENERIC_RAND_LANG", new GenericWordLineCreatorProvider("GENERIC_RAND_LAND",
+		new SimpleEntry<>("GENERIC_RAND_LANG", new GenericWordLineCreatorProvider("GENERIC_RAND_LANG",
 			(p,s)->new RandLangWordCreator(p), Distributions.rightSkewed)),
 		new SimpleEntry<>("ADAPT_RAND", new GenericWordLineCreatorProvider("ADAPT_RAND",
-			(p,s)->new AdaptRandWordCreator(p, s, 20), Distributions.rightSkewed)))
+			(p,s)->new AdaptRandWordCreator(p, s), Distributions.rightSkewed)),
+		new SimpleEntry<>("ADAPT_RAND_LANG", new GenericWordLineCreatorProvider("ADAPT_RAND_LANG",
+				(p,s)->new AdaptRandLangWordCreator(p, s), Distributions.rightSkewed))
+		)
 		.collect(Collectors.toMap((e) -> e.getKey(), e -> e.getValue())));
 	}
 	

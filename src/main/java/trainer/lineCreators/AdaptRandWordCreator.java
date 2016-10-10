@@ -7,11 +7,21 @@ import trainer.PerformanceStats;
 
 import java.util.Set;
 
+/**
+ * Similar as {@link RandWordCreator}, but the probability of occurrence of a char depends
+ * on the current {@link trainer.PerformanceStats}, with a high error rate for a given char
+ * increasing the chance of its occurrence.
+ * 
+ * @author Lasse Osterhagen
+ *
+ */
+
 public class AdaptRandWordCreator implements GenericWordCreator {
 	
+	public static final double ADAPT_VAL = 60.0;
 	private String charSet;
 	private PerformanceStats ps;
-	private int adaptFactor = 20;
+	private double adaptFactor;
 	
 	/**
 	 * Defines how the <i>adapted</i> charSet will be used to create generic words.
@@ -35,10 +45,10 @@ public class AdaptRandWordCreator implements GenericWordCreator {
 	 * @param adaptFactor the adaptation factor that determines, to what extend the
 	 * typist's error rate will affect the frequency of certain chars to appear
 	 */
-	public AdaptRandWordCreator(String charSet, PerformanceStats ps, int adaptFactor) {
+	public AdaptRandWordCreator(String charSet, PerformanceStats ps) {
 		this.charSet = charSet;
 		this.ps = ps;
-		this.adaptFactor = adaptFactor;
+		this.adaptFactor = ADAPT_VAL/charSet.length();
 	}
 	
 	/**
