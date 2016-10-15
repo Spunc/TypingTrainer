@@ -111,11 +111,11 @@ public class PracticeStatsDlg extends JDialog {
 		Point2D[] points = new Point2D[n];
 		for(int i=0; i<n; ++i) {
 			points[i] = new Point2D.Double(i+1,
-					sessions.get(n-i-1).getPerformanceRate().getErrorRate());
+					sessions.get(n-i-1).getPerformanceRate().getErrorRate()*100);
 		}
 		lc.addPoints(points);
 		lc.setXAxisDecimalPrecision(0);
-		lc.setYAxisDecimalPrecision(3);
+		lc.setYAxisDecimalPrecision(2);
 		return lc;
 	}
 	

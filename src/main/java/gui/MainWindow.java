@@ -31,7 +31,7 @@ import trainer.KeyTypedEvent;
 import trainer.LineMonitor;
 import trainer.PracticeController;
 import trainer.lineCreators.LineCreatorFactory.ImplementationNotFound;
-import trainer.lineCreators.LineCreatorProvider.InitException;
+import trainer.lineCreators.InitException;
 
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame implements Observer {
@@ -292,9 +292,9 @@ public class MainWindow extends JFrame implements Observer {
 				line1.signalError();
 				faultsLabel.setText(Integer.toString(
 						pc.getPerformanceStats().getTotalPerformanceRate().getErrors()));
+			}
 			faultRateLabel.setText(Util.rateLabel(
 					pc.getPerformanceStats().getTotalPerformanceRate().getErrorRate()));
-			}
 		}
 		
 		// React on events of PracticeController
