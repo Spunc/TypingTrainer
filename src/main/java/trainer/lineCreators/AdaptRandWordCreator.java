@@ -42,8 +42,6 @@ public class AdaptRandWordCreator implements GenericWordCreator {
 	 * Class constructor.
 	 * @param charSet the initial char set from which generic words should be created
 	 * @param ps the current performance statistics of the typist
-	 * @param adaptFactor the adaptation factor that determines, to what extend the
-	 * typist's error rate will affect the frequency of certain chars to appear
 	 */
 	public AdaptRandWordCreator(String charSet, PerformanceStats ps) {
 		this.charSet = charSet;

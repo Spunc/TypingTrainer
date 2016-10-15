@@ -2,6 +2,7 @@ package trainer;
 
 import trainer.lineCreators.LineCreator;
 import trainer.lineCreators.LineCreatorFactory.ImplementationNotFound;
+import trainer.lineCreators.LineCreatorProvider.InitException;
 
 /**
  * A <tt>PracticeController</tt> that allows to set the <tt>LineCreator</tt> for
@@ -12,7 +13,8 @@ import trainer.lineCreators.LineCreatorFactory.ImplementationNotFound;
  */
 public class TestPracticeController extends PracticeController {
 
-	public TestPracticeController(Exercise exercise, int maxLineLength) throws ImplementationNotFound {
+	public TestPracticeController(Exercise exercise, int maxLineLength)
+			throws ImplementationNotFound, InitException {
 		super(exercise, maxLineLength);
 	}
 	

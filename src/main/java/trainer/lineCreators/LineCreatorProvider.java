@@ -13,16 +13,17 @@ import trainer.PerformanceStats;
 public interface LineCreatorProvider {
 	
 	/**
-	 * Provide an implementation for <tt>LineCreator</tt>.
+	 * Provides an implementation for <code>LineCreator</code>.
 	 * @param param gives access to a configuration parameter that can be used to specify
-	 * the behavior of the <tt>LineCreator</tt>.
+	 * the behavior of the LineCreator.
 	 * @param ps gives access to the performance statistics of a running practice unit
-	 * to allow adaptive behavior of the <tt>LineCreator</tt>.
-	 * @return the <tt>LineCreator</tt> implementation.
+	 * to allow adaptive behavior of the LineCreator.
+	 * @return the LineCreator< implementation.
+	 * @throws InitException if the LineCreator could not be created
 	 * @see LineCreator
 	 * @see PerformanceStats
 	 */
-	public LineCreator getLineCreator(String param, PerformanceStats ps);
+	public LineCreator getLineCreator(String param, PerformanceStats ps) throws InitException;
 	
 	/**
 	 * A short description of the <tt>LineCreator</tt> provided by this class.
@@ -40,5 +41,16 @@ public interface LineCreatorProvider {
 	 * @return a shorter version of <tt>param</tt> or by default <tt>param</tt>.
 	 */
 	public default String shortParam(String param) {return param;}
+	
+	/**
+	 * This exception is thrown, if the <code>LineCreator</code> could not be initialized,
+	 * e. g. because resources are not available.
+	 */
+	@SuppressWarnings("serial")
+	public static class InitException extends Exception {
+		public InitException(String msg) {
+			super(msg);
+		}
+	}
 	
 }

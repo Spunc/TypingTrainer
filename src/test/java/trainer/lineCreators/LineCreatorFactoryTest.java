@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import trainer.PerformanceStats;
 import trainer.lineCreators.LineCreatorFactory.ImplementationNotFound;
+import trainer.lineCreators.LineCreatorProvider.InitException;
 
 
 public class LineCreatorFactoryTest {
@@ -43,7 +44,7 @@ public class LineCreatorFactoryTest {
 	}
 	
 	@Test
-	public void initALocalLineCreator() throws ImplementationNotFound {
+	public void initALocalLineCreator() throws ImplementationNotFound, InitException {
 		String param = "abc";
 		PerformanceStats ps = new PerformanceStats();
 		LineCreator lc = LineCreatorFactory.getLineCreator("GENERIC_RAND", param, ps);
@@ -51,7 +52,7 @@ public class LineCreatorFactoryTest {
 	}
 	
 	@Test
-	public void initAPluginLineCreator() throws ImplementationNotFound {
+	public void initAPluginLineCreator() throws ImplementationNotFound, InitException {
 		LineCreator lc = LineCreatorFactory.getLineCreator("TestLineCreatorPlugin",
 				null, null);
 		assertNotNull(lc);

@@ -10,6 +10,7 @@ import org.mockito.MockitoAnnotations;
 
 import persistence.SessionPersist;
 import trainer.lineCreators.LineCreatorFactory.ImplementationNotFound;
+import trainer.lineCreators.LineCreatorProvider.InitException;
 
 public class PracticeControllerExerciseCharLimitTest {
 	
@@ -23,7 +24,7 @@ public class PracticeControllerExerciseCharLimitTest {
 	
 	private int countCorrect;
 	
-	private void init() throws ImplementationNotFound {
+	private void init() throws ImplementationNotFound, InitException {
 		exercise = DefaultObjectFactory.getExercise();
 		exercise.setLimitType(Exercise.LimitType.CHARS);
 		exercise.setLimitUnits(charLimit);
@@ -33,7 +34,7 @@ public class PracticeControllerExerciseCharLimitTest {
 	}
 	
 	@Before
-	public void initAndRun() throws ImplementationNotFound {
+	public void initAndRun() throws ImplementationNotFound, InitException {
 		init();
 		pc.ready();
 		pc.run();

@@ -33,4 +33,5 @@ public interface LineCreator {
 	 * any longer. Override this method to release any open resources.
 	 */
 	public default void stop() {};
+	
 }

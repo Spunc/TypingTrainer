@@ -9,8 +9,8 @@ import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import trainer.Distributions;
 import trainer.PerformanceStats;
+import trainer.lineCreators.LineCreatorProvider.InitException;
 
 
 public class LineCreatorFactory {
@@ -37,7 +37,8 @@ public class LineCreatorFactory {
 				localLineCreatorProviders().get(type) : findPluginLineCreatorProvider(type);
 	}
 	
-	public static LineCreator getLineCreator(String type, String param, PerformanceStats ps) throws ImplementationNotFound {
+	public static LineCreator getLineCreator(String type, String param, PerformanceStats ps)
+			throws ImplementationNotFound, InitException {
 		return getLineCreatorProvider(type).getLineCreator(param, ps);
 	}
 	

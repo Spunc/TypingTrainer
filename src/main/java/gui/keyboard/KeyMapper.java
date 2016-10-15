@@ -94,7 +94,6 @@ public class KeyMapper {
 	/**
 	 * Create a KeyMapper for the specified locale
 	 * @param layoutID a complete language_country Locale like <i>en_GB</i> or <i>de_DE</i>
-	 * @throws IOException 
 	 */
 	public KeyMapper(String layoutID) {
 		try {

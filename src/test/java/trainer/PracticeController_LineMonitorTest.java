@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import trainer.Exercise.LimitType;
 import trainer.lineCreators.LineCreatorFactory.ImplementationNotFound;
+import trainer.lineCreators.LineCreatorProvider.InitException;
 
 /**
  * Test the interplay of a {@link  trainer.PracticeController PracticeController} and the
@@ -24,7 +25,7 @@ public class PracticeController_LineMonitorTest {
 	private LineMonitor lm;
 	
 	@Before
-	public void init() throws ImplementationNotFound {
+	public void init() throws ImplementationNotFound, InitException {
 		final int maxLineLength = 20;
 		exercise = DefaultObjectFactory.getExercise();
 		exercise.setLimitType(LimitType.NONE);

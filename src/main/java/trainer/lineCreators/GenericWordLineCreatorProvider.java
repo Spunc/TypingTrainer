@@ -1,6 +1,7 @@
 package trainer.lineCreators;
 
 import java.util.Random;
+import java.util.ResourceBundle;
 
 import trainer.PerformanceStats;
 
@@ -12,10 +13,11 @@ import trainer.PerformanceStats;
  *
  */
 
-public class GenericWordLineCreatorProvider extends LocalLineCreatorProvider implements LineCreatorProvider {
+public class GenericWordLineCreatorProvider implements LineCreatorProvider {
 	
 	private GenericWordCreatorSupplier wordCreatorSupplier;
 	private int[] wordLenDistr;
+	private String description;
 	
 	public interface GenericWordCreatorSupplier {
 		GenericWordCreator create(String param, PerformanceStats ps);
@@ -23,9 +25,10 @@ public class GenericWordLineCreatorProvider extends LocalLineCreatorProvider imp
 	 
 	public GenericWordLineCreatorProvider(String descriptionKey,
 			GenericWordCreatorSupplier wordCreatorSupplier, int[] wordLengthDistribution) {
-		super(descriptionKey);
 		this.wordCreatorSupplier = wordCreatorSupplier;
 		this.wordLenDistr = wordLengthDistribution;
+		description = ResourceBundle.getBundle("txtBundles.lineCreatorText")
+				.getString(descriptionKey);
 	}
 	
 	
@@ -65,6 +68,11 @@ public class GenericWordLineCreatorProvider extends LocalLineCreatorProvider imp
 	@Override
 	public LineCreator getLineCreator(String param, PerformanceStats ps) {
 		return new GenericWordLineCreator(wordCreatorSupplier.create(param, ps));
+	}
+
+	@Override
+	public String description() {
+		return description;
 	}
 
 }

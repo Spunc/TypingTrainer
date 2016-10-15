@@ -8,15 +8,17 @@ import java.util.function.UnaryOperator;
 import org.junit.Before;
 import org.junit.Test;
 
+import trainer.lineCreators.LineCreatorProvider.InitException;
+
 
 /**
- * <p><tt>plugin.TestPlugin</tt> is a test implementation for <tt>LineCreatorProviderPlugin</tt>.
+ * <p><code>plugin.TestPlugin</code> is a test implementation for <code>LineCreatorProviderPlugin</code>.
  * 
- * <p>This class tests that the <tt>LineCreatorProviderPlugin</tt> interface is implemented
- * correctly, so that <tt>plugin.TestPlugin</tt> can be used in other unit tests.
+ * <p>This class tests that the <code>LineCreatorProviderPlugin</code> interface is implemented
+ * correctly, so that <code>plugin.TestPlugin</code> can be used in other unit tests.
  * 
  * <p>The static fields of this class specify the behavior that can be expected from
- * <tt>plugin.TestPlugin</tt>.
+ * <code>plugin.TestPlugin</code>.
  * 
  * @author Lasse Osterhagen
  *
@@ -54,7 +56,7 @@ public class TestPluginTest {
 	}
 	
 	@Test
-	public void testProvidedLineCreator() {
+	public void testProvidedLineCreator() throws InitException {
 		LineCreator lc = lcp.getLineCreator(null, null);
 		int strLen = LINECREATOR_CREATE.length();
 		assertEquals(lc.create(strLen), createFunc.apply(strLen));

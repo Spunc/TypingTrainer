@@ -10,6 +10,7 @@ import org.mockito.MockitoAnnotations;
 
 import persistence.SessionPersist;
 import trainer.lineCreators.LineCreatorFactory.ImplementationNotFound;
+import trainer.lineCreators.LineCreatorProvider.InitException;
 
 import static org.hamcrest.number.IsCloseTo.*;
 
@@ -24,7 +25,7 @@ public class PracticeControllerExerciseTimeLimitTest {
 	private @InjectMocks PracticeController pc;
 	private LineMonitor lm;
 	
-	private void init() throws ImplementationNotFound {
+	private void init() throws ImplementationNotFound, InitException {
 		exercise = DefaultObjectFactory.getExercise();
 		exercise.setLimitType(Exercise.LimitType.TIME);
 		exercise.setLimitUnits(timeLimit);
@@ -41,7 +42,7 @@ public class PracticeControllerExerciseTimeLimitTest {
 	}
 	
 	@Before
-	public void initAndRun() throws InterruptedException, ImplementationNotFound {
+	public void initAndRun() throws InterruptedException, ImplementationNotFound, InitException {
 		init();
 		pc.ready();
 		pc.run();

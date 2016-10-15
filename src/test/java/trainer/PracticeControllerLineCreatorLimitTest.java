@@ -11,6 +11,7 @@ import org.mockito.MockitoAnnotations;
 import persistence.SessionPersist;
 import trainer.lineCreators.TestLineCreator;
 import trainer.lineCreators.LineCreatorFactory.ImplementationNotFound;
+import trainer.lineCreators.LineCreatorProvider.InitException;
 
 /**
  * Tests interplay between <tt>PracticeController</tt> and <tt>LineCreator</tt> in case
@@ -33,7 +34,7 @@ public class PracticeControllerLineCreatorLimitTest {
 	private @InjectMocks TestPracticeController pc;
 
 	@Before
-	public void init() throws ImplementationNotFound {
+	public void init() throws ImplementationNotFound, InitException {
 		testLineCreator = new TestLineCreator(LINE, NUM_REP);
 		exercise.setLimitType(Exercise.LimitType.NONE);
 		pc = new TestPracticeController(exercise, LINE_LEN);

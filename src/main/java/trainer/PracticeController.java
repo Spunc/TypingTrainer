@@ -6,6 +6,7 @@ import persistence.SessionPersist;
 import trainer.lineCreators.LineCreator;
 import trainer.lineCreators.LineCreatorFactory;
 import trainer.lineCreators.LineCreatorFactory.ImplementationNotFound;
+import trainer.lineCreators.LineCreatorProvider.InitException;
 
 public class PracticeController extends Observable {
 	
@@ -39,7 +40,8 @@ public class PracticeController extends Observable {
 	private SimpleTimerInterface stopWatch = new NullStopWatch();
 	private SessionPersist sessionPersist = new SessionPersist();
 	
-	public PracticeController(Exercise exercise, int maxLineLength) throws ImplementationNotFound {
+	public PracticeController(Exercise exercise, int maxLineLength)
+			throws ImplementationNotFound, InitException {
 		this.exercise = exercise;
 		this.maxLineLength = maxLineLength;
 		performanceStats = new PerformanceStats();

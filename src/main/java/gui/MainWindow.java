@@ -31,6 +31,7 @@ import trainer.KeyTypedEvent;
 import trainer.LineMonitor;
 import trainer.PracticeController;
 import trainer.lineCreators.LineCreatorFactory.ImplementationNotFound;
+import trainer.lineCreators.LineCreatorProvider.InitException;
 
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame implements Observer {
@@ -58,11 +59,11 @@ public class MainWindow extends JFrame implements Observer {
 	
 	void setExercise(Exercise exercise) {
 		this.exercise = exercise;
-		try {
-			resetExercise();
-		} catch (ImplementationNotFound e) {
-			e.printStackTrace();
-		}
+//		try {
+//			resetExercise();
+//		} catch (ImplementationNotFound e) {
+//			e.printStackTrace();
+//		}
 		startButton.setEnabled(true);
 		practiceUnitLabel.setText(Util.getExerciseNameText(exercise.getName(),
 				exercise.getExerciseGroup().getId()));
@@ -143,7 +144,7 @@ public class MainWindow extends JFrame implements Observer {
 	}
 	
 	// Reset PracticeController and KeyMonitor to new Exercise
-	private void resetExercise() throws ImplementationNotFound {
+	private void resetExercise() throws ImplementationNotFound, InitException {
 		pc = new PracticeController(exercise, MAX_LINE_LENGTH);
 		pc.addObserver(this);
 		lineMonitor = pc.getLineMonitor();
@@ -224,19 +225,16 @@ public class MainWindow extends JFrame implements Observer {
 		startButton = new JButton("Start");
 		startButton.addActionListener(evt -> {
 			startButton.setEnabled(false);
-			if(pc.getState() == PracticeController.State.REG_STOPPED ||
-					pc.getState() == PracticeController.State.USER_STOPPED) {
-				// Reset to current exercise
-				try {
-					resetExercise();
-				} catch (ImplementationNotFound e) {
-					// This should not be possible, because when State.STOPPED has been reached,
-					// the exercise already has been initialized successfully.
-					e.printStackTrace();
-				}
+			try {
+				resetExercise();
+				resetLabels();
+				pc.ready();
 			}
-			resetLabels();
-			pc.ready();
+			catch (ImplementationNotFound | InitException e) {
+				// Insert error message for user here
+				startButton.setEnabled(true);
+				e.printStackTrace();
+			}
 		});
 		startButton.setEnabled(false);
 		stopButton = new JButton("Stop");

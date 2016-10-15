@@ -6,22 +6,23 @@ import org.junit.Test;
 
 import trainer.PerformanceStats;
 import trainer.lineCreators.LineCreatorFactory.ImplementationNotFound;
+import trainer.lineCreators.LineCreatorProvider.InitException;
 
 public class GenericWordLineCreatorTest {
 
 	@Test
-	public void testRandWordCreator() throws ImplementationNotFound {
+	public void testRandWordCreator() throws ImplementationNotFound, InitException {
 		testLineCreator(LineCreatorFactory.getLineCreator("GENERIC_RAND", "abcde", null));
 	}
 	
 	@Test
-	public void testRandLangWordCreator() throws ImplementationNotFound {
+	public void testRandLangWordCreator() throws ImplementationNotFound, InitException {
 		testLineCreator(LineCreatorFactory.getLineCreator("GENERIC_RAND_LANG",
 				"abcABC.", null));
 	}
 	
 	@Test
-	public void testAdaptRandWordCreator() throws ImplementationNotFound {
+	public void testAdaptRandWordCreator() throws ImplementationNotFound, InitException {
 		testLineCreator(LineCreatorFactory.getLineCreator("ADAPT_RAND", "abcde",
 				new PerformanceStats()));
 	}

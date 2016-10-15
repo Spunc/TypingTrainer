@@ -25,11 +25,6 @@ import static gui.Util.getGUIText;
 
 public class StartEnd {
 	
-	/**
-	 * This is the (hopefully) unique id that identifies the application properties
-	 */
-	private static final String appPrefNode = "/typeWriter108639";
-	private static final String pref_userSaveDir = "userSaveDir";
 	private static final String dbName = "typeWriter.db";
 	
 	/**
@@ -65,7 +60,7 @@ public class StartEnd {
 				return;
 			}
 			// ------------Usual start-----------------
-			if(!Preferences.userRoot().nodeExists(appPrefNode)) {
+			if(!Preferences.userRoot().nodeExists(Constants.APP_PREF_NODE)) {
 				// Install
 				if(!install()) {
 					JOptionPane.showMessageDialog(null, getGUIText("aborted"), getGUIText("setup"),
@@ -74,8 +69,7 @@ public class StartEnd {
 				}
 			}
 			// Open database connection
-			Preferences pref = Preferences.userRoot().node(appPrefNode);
-			Path dbPath = Paths.get(pref.get(pref_userSaveDir, null)).resolve(dbName);
+			Path dbPath = Constants.getUserSaveDir().resolve(dbName);
 			persistence.DbAccess.getInstance().connect(dbPath.toString());
 			SwingUtilities.invokeLater(() -> showMainWindow());
 		}
@@ -112,11 +106,16 @@ public class StartEnd {
 			return false;
 		}
 		try {
-			Files.createDirectories(chosenDir.get());
+			// Create user defined root directory for application data
+			Files.createDirectories(chosenDir.get()); //does't throw exception if already existent
 			// Add location of application directory to Preferences
-			Preferences pref = Preferences.userRoot().node(appPrefNode);
-			pref.put(pref_userSaveDir, chosenDir.get().toString());
+			Preferences pref = Preferences.userRoot().node(Constants.APP_PREF_NODE);
+			pref.put(Constants.PREF_USERSAVE_DIR, chosenDir.get().toString());
 			pref.flush();
+			// Add additional directories
+			Files.createDirectory(Constants.getWordsDir());
+			Files.createDirectory(Constants.getTextsDir());
+			Files.createDirectory(Constants.getPluginsDir());
 		} catch (IOException | BackingStoreException e) {
 			e.printStackTrace();
 			return false;
@@ -134,14 +133,14 @@ public class StartEnd {
 	 */
 	private static void uninstall(CommandLine cmd) throws BackingStoreException {
 		// Application is already uninstalled 
-		if(!Preferences.userRoot().nodeExists(appPrefNode)) {
+		if(!Preferences.userRoot().nodeExists(Constants.APP_PREF_NODE)) {
 			String message = getGUIText("alreadyUninstalled");
 			JOptionPane.showMessageDialog(null, message);
 			return;
 		}
 		// Delete user data directory of the application
-		Preferences appPrefs = Preferences.userRoot().node(appPrefNode);
-		String appDirStr = appPrefs.get(pref_userSaveDir, null);
+		Preferences appPrefs = Preferences.userRoot().node(Constants.APP_PREF_NODE);
+		String appDirStr = appPrefs.get(Constants.PREF_USERSAVE_DIR, null);
 		if(appDirStr == null)
 			throw new RuntimeException("Preferences corrupted.");
 		Path appDir = Paths.get(appDirStr);

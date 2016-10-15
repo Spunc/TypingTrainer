@@ -1,4 +1,4 @@
-package trainer;
+package trainer.lineCreators;
 
 public class Distributions {
 
