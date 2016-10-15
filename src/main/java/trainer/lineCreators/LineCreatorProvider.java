@@ -42,15 +42,4 @@ public interface LineCreatorProvider {
 	 */
 	public default String shortParam(String param) {return param;}
 	
-	/**
-	 * This exception is thrown, if the <code>LineCreator</code> could not be initialized,
-	 * e. g. because resources are not available.
-	 */
-	@SuppressWarnings("serial")
-	public static class InitException extends Exception {
-		public InitException(String msg) {
-			super(msg);
-		}
-	}
-	
 }

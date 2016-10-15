@@ -17,6 +17,7 @@
 	{"e4", 1, GENERIC_RAND, "asdfjklö", CHARS, 200}
 	{"e5", 1, ADAPT_RAND, "asdfghjklö", CHARS, 200}
 	{"e6", 1, ADAPT_RAND, "asdfghjklöä", CHARS, 200}
+	{"e7", 1, wordList, "isLocal=True;fileName=middleRow.txt", CHARS, 200}
 	{"e7", 2, GENERIC_RAND, "ru", CHARS, 200}
 	{"e8", 2, GENERIC_RAND, "erui", CHARS, 200}
 	{"e9", 2, GENERIC_RAND, "weruio", CHARS, 200}

@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import trainer.PerformanceStats;
 import trainer.lineCreators.LineCreatorFactory.ImplementationNotFound;
-import trainer.lineCreators.LineCreatorProvider.InitException;
+import trainer.lineCreators.InitException;
 
 public class GenericWordLineCreatorTest {
 

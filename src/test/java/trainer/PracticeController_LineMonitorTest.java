@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import trainer.Exercise.LimitType;
 import trainer.lineCreators.LineCreatorFactory.ImplementationNotFound;
-import trainer.lineCreators.LineCreatorProvider.InitException;
+import trainer.lineCreators.InitException;
 
 /**
  * Test the interplay of a {@link  trainer.PracticeController PracticeController} and the

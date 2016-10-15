@@ -8,7 +8,7 @@ import java.util.function.UnaryOperator;
 import org.junit.Before;
 import org.junit.Test;
 
-import trainer.lineCreators.LineCreatorProvider.InitException;
+import trainer.lineCreators.InitException;
 
 
 /**

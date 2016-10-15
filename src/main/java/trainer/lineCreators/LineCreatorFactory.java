@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import trainer.PerformanceStats;
-import trainer.lineCreators.LineCreatorProvider.InitException;
 
 
 public class LineCreatorFactory {
@@ -27,7 +26,8 @@ public class LineCreatorFactory {
 		new SimpleEntry<>("ADAPT_RAND", new GenericWordLineCreatorProvider("ADAPT_RAND",
 			(p,s)->new AdaptRandWordCreator(p, s), Distributions.rightSkewed)),
 		new SimpleEntry<>("ADAPT_RAND_LANG", new GenericWordLineCreatorProvider("ADAPT_RAND_LANG",
-				(p,s)->new AdaptRandLangWordCreator(p, s), Distributions.rightSkewed))
+				(p,s)->new AdaptRandLangWordCreator(p, s), Distributions.rightSkewed)),
+		new SimpleEntry<>("wordList", new WordListLineCreatorProvider())
 		)
 		.collect(Collectors.toMap((e) -> e.getKey(), e -> e.getValue())));
 	}

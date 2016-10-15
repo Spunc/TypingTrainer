@@ -11,7 +11,7 @@ import org.mockito.MockitoAnnotations;
 import persistence.SessionPersist;
 import trainer.lineCreators.TestLineCreator;
 import trainer.lineCreators.LineCreatorFactory.ImplementationNotFound;
-import trainer.lineCreators.LineCreatorProvider.InitException;
+import trainer.lineCreators.InitException;
 
 /**
  * Tests interplay between <tt>PracticeController</tt> and <tt>LineCreator</tt> in case

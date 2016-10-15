@@ -10,7 +10,7 @@ import org.mockito.MockitoAnnotations;
 
 import persistence.SessionPersist;
 import trainer.lineCreators.LineCreatorFactory.ImplementationNotFound;
-import trainer.lineCreators.LineCreatorProvider.InitException;
+import trainer.lineCreators.InitException;
 
 public class PracticeControllerExerciseCharLimitTest {
 	

@@ -6,7 +6,7 @@ import persistence.SessionPersist;
 import trainer.lineCreators.LineCreator;
 import trainer.lineCreators.LineCreatorFactory;
 import trainer.lineCreators.LineCreatorFactory.ImplementationNotFound;
-import trainer.lineCreators.LineCreatorProvider.InitException;
+import trainer.lineCreators.InitException;
 
 public class PracticeController extends Observable {
 	

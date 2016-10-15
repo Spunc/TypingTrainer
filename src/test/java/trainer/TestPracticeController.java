@@ -2,7 +2,7 @@ package trainer;
 
 import trainer.lineCreators.LineCreator;
 import trainer.lineCreators.LineCreatorFactory.ImplementationNotFound;
-import trainer.lineCreators.LineCreatorProvider.InitException;
+import trainer.lineCreators.InitException;
 
 /**
  * A <tt>PracticeController</tt> that allows to set the <tt>LineCreator</tt> for
