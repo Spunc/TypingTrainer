@@ -2,41 +2,49 @@ package trainer.lineCreators;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+
+import org.junit.Before;
 import org.junit.Test;
 
 public class WordListLineCreatorTest {
 	
-	private final String parameter = "isLocal=True;fileName=middleRow.txt";
-	private final int maxLength = 30;
-
-	private String createLine() {
-		try {
-			LineCreator lc = new WordListLineCreatorProvider().getLineCreator(parameter, null);
-			return lc.create(maxLength);
-		}
-		catch(Exception e) {throw new RuntimeException(e);}
+	private static final int maxLength = 30;
+	private static final String word1 = "word1";
+	private static final String word2 = "word2";
+	private String line;
+	
+	@Before
+	public void createFileInputStream() throws IOException {
+		InputStream is = this.getClass().getResourceAsStream("words.txt");
+		WordListLineCreator wllc = new WordListLineCreator(is);
+		line = wllc.create(maxLength);
 	}
 
 	@Test
 	public void testNotEmpty() {
-		assertTrue(createLine().length() > 0);
+		assertTrue(line.length() > 0);
 	}
 	
 	@Test
 	public void testMaxSize() {
-		assertTrue(createLine().length() <= maxLength + 1);
+		assertTrue(line.length() <= maxLength + 1);
 	}
 	
 	@Test
 	public void testNewLine() {
-		String line = createLine();
 		assertEquals('\n', line.charAt(line.length()-1));
 	}
 	
-	@Test(expected = InitException.class)
-	public void testNonExistentFile() throws InitException {
-		String param = "isLocal=True;fileName=notExistent";
-		new WordListLineCreatorProvider().getLineCreator(param, null);
+	@Test
+	public void testContent() {
+		String[] words = line.split(" ");
+		String lastWord = words[words.length-1];
+		lastWord = lastWord.substring(0, lastWord.length()-1);
+		words[words.length-1] = lastWord; // remove newline at end
+		assertTrue( Arrays.stream(words).allMatch(s-> s.equals(word1) || s.equals(word2)) );
 	}
 
 }

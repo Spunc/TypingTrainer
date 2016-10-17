@@ -19,6 +19,7 @@ public class GenericWordLineCreatorProvider implements LineCreatorProvider {
 	private int[] wordLenDistr;
 	private String description;
 	
+	@FunctionalInterface
 	public interface GenericWordCreatorSupplier {
 		GenericWordCreator create(String param, PerformanceStats ps);
 	}

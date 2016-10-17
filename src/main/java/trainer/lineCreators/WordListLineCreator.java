@@ -2,6 +2,9 @@ package trainer.lineCreators;
 
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -10,8 +13,10 @@ public class WordListLineCreator implements LineCreator {
 	private String[] wordList;
 	private Random random = new Random();
 	
-	WordListLineCreator(BufferedReader reader) {
-		wordList = reader.lines().collect(Collectors.toList()).toArray(new String[0]);
+	WordListLineCreator(InputStream is) throws IOException {
+		try(BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+			wordList = reader.lines().collect(Collectors.toList()).toArray(new String[0]);
+		}
 	}
 
 	@Override
