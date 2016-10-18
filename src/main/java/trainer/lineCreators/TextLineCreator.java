@@ -19,9 +19,22 @@ public class TextLineCreator implements LineCreator {
 	public String create(int length) {
 		if(!hasNext())
 			throw new IllegalStateException("EOF");
-		if(wordBuffer.length() > length)
-			throw new RuntimeException("Word longer than row.");
 		
+		// next word does not fit into one line
+		if(wordBuffer.length() > length) {
+			String result;
+			// try to find hyphen
+			int hyphenIndex = wordBuffer.indexOf('-');
+			if(hyphenIndex > 0 && hyphenIndex < length) {
+				result = wordBuffer.substring(0, hyphenIndex+1) + '\n';
+				wordBuffer = wordBuffer.substring(hyphenIndex+1);
+			}
+			else {
+				result = wordBuffer.substring(0, length-1) + "-\n";
+				wordBuffer = wordBuffer.substring(length-1);
+			}
+			return result;
+		}
 		StringBuilder sb = new StringBuilder(length+1);
 		sb.append(wordBuffer);
 		wordBuffer = null;
