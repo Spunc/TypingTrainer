@@ -2,6 +2,7 @@ package trainer.lineCreators;
 
 import static org.junit.Assert.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -17,10 +18,13 @@ public class WordListLineCreatorTest {
 	private String line;
 	
 	@Before
-	public void createFileInputStream() throws IOException {
-		InputStream is = this.getClass().getResourceAsStream("words.txt");
+	public void createLine() throws IOException {
+		String content = word1 + '\n' + word2 + '\n';
+		InputStream is = new ByteArrayInputStream(content.getBytes(
+				persistence.Constants.PROJECT_CHARSET));
 		WordListLineCreator wllc = new WordListLineCreator(is);
 		line = wllc.create(maxLength);
+		wllc.stop();
 	}
 
 	@Test
