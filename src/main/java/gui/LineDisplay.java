@@ -64,15 +64,16 @@ public class LineDisplay extends Component {
 	 * @param textLine the new text line
 	 */
 	public void setTextLine(String textLine) {
-		if(textLine.equals("") || textLine == null) {
-			this.textLine = null;
-			return;
-		}
 		if(textLine.length() > maxTextSize+1) //allow a last newline char
 			throw new IllegalArgumentException("Text row too long: "
 					+ "was: " +textLine.length());
-		this.textLine = new AttributedString(textLine);
-		this.textLine.addAttribute(TextAttribute.FONT, textFont);
+		if(textLine.equals("")) {
+			this.textLine = null;
+		}
+		else {
+			this.textLine = new AttributedString(textLine);
+			this.textLine.addAttribute(TextAttribute.FONT, textFont);
+		}
 		repaint();
 	}
 

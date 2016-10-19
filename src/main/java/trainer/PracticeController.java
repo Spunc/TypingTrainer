@@ -121,13 +121,13 @@ public class PracticeController extends Observable {
 		line1 = line2;
 		if(lineCreator.hasNext()) {
 			line2 = lineCreator.create(maxLineLength);
-			lineMonitor.setLine(line1);
-			notifyObservers(Event.NEW_LINE);
 		}
 		else {
 			line2 = "";
 			isLastRow = true;
 		}
+		lineMonitor.setLine(line1);
+		notifyObservers(Event.NEW_LINE);
 	}
 
 	private void setState(State state) {
