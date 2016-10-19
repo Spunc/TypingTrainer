@@ -27,8 +27,8 @@ public class LineCreatorFactory {
 			(p,s)->new AdaptRandWordCreator(p, s), Distributions.rightSkewed)),
 		new SimpleEntry<>("ADAPT_RAND_LANG", new GenericWordLineCreatorProvider("ADAPT_RAND_LANG",
 				(p,s)->new AdaptRandLangWordCreator(p, s), Distributions.rightSkewed)),
-		new SimpleEntry<>("wordList", new FileLineCreatorProvider("wordList",
-				is-> new WordListLineCreator(is)))
+		new SimpleEntry<>("wordList", new WordListLineCreatorProvider()),
+		new SimpleEntry<>("text", new TextLineCreatorProvider())
 		)
 		.collect(Collectors.toMap((e) -> e.getKey(), e -> e.getValue())));
 	}

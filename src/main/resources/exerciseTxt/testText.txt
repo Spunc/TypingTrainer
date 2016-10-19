@@ -1,0 +1,2 @@
+Some short test text for checking the behavior of
+TextLineCreator. This text for is demonstration purpose only.

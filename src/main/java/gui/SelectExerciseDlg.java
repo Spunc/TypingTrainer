@@ -116,7 +116,7 @@ public class SelectExerciseDlg {
 		table = new JTable(mtbl.getTableModel());
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane scrollPane = new JScrollPane(table);
-		scrollPane.setPreferredSize(new Dimension(550, 200));
+		scrollPane.setPreferredSize(new Dimension(700, 200));
 		return scrollPane;
 	}
 	

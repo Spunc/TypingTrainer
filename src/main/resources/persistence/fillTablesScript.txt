@@ -5,8 +5,6 @@
 	{4, "allCharacters", 0}
 	{5, "numberRow", 0}
 	{6, "charactersNumbers", 0}
-	{7, "words", 0}
-	{8, "texts", 0}
 	{9, "userDefined", 1}
 }
 
@@ -17,24 +15,28 @@
 	{"e4", 1, GENERIC_RAND, "asdfjklö", CHARS, 200}
 	{"e5", 1, ADAPT_RAND, "asdfghjklö", CHARS, 200}
 	{"e6", 1, ADAPT_RAND, "asdfghjklöä", CHARS, 200}
-	{"e7", 1, wordList, "isLocal=True;fileName=middleRow.txt", CHARS, 200}
-	{"e7", 2, GENERIC_RAND, "ru", CHARS, 200}
-	{"e8", 2, GENERIC_RAND, "erui", CHARS, 200}
-	{"e9", 2, GENERIC_RAND, "weruio", CHARS, 200}
-	{"e10", 2, GENERIC_RAND, "qweruiop", CHARS, 200}
-	{"e11", 2, ADAPT_RAND, "qwertzuiop", CHARS, 200}
-	{"e12", 2, ADAPT_RAND, "qwertzuiopü", CHARS, 200}
-	{"e13", 3, GENERIC_RAND, "vm", CHARS, 200}
-	{"e14", 3, GENERIC_RAND, "cvm,", CHARS, 200}
-	{"e15", 3, GENERIC_RAND, "xcvm,.", CHARS, 200}
-	{"e16", 3, ADAPT_RAND, "yxcvm,.-", CHARS, 200}
-	{"e17", 3, ADAPT_RAND, "yxcvbnm,.-", CHARS, 200}
-	{"e18", 4, ADAPT_RAND, "abcdefghijklmnopqrstuvwxyzäöüß.,-", CHARS, 200}
-	{"e19", 4, ADAPT_RAND_LANG, "abcdefghijklmnopqrstuvwxyzäöüßABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ.,-;:", CHARS, 200}
-	{"e20", 5, GENERIC_RAND, "58", CHARS, 200}
-	{"e21", 5, GENERIC_RAND, "4589", CHARS, 200}
-	{"e22", 5, GENERIC_RAND, "345890", CHARS, 200}
-	{"e23", 5, GENERIC_RAND, "2345890", CHARS, 200}
-	{"e24", 5, ADAPT_RAND, "234567890", CHARS, 200}
-	{"e25", 5, ADAPT_RAND, "1234567890", CHARS, 200}
+	{"e7", 1, wordList, "isLocal=True;fileName=middleRow_de.txt", CHARS, 200}
+	{"e8", 2, GENERIC_RAND, "ru", CHARS, 200}
+	{"e9", 2, GENERIC_RAND, "erui", CHARS, 200}
+	{"e10", 2, GENERIC_RAND, "weruio", CHARS, 200}
+	{"e11", 2, GENERIC_RAND, "qweruiop", CHARS, 200}
+	{"e12", 2, ADAPT_RAND, "qwertzuiop", CHARS, 200}
+	{"e13", 2, ADAPT_RAND, "qwertzuiopü", CHARS, 200}
+    {"e14", 2, wordList, "isLocal=True;fileName=upperRow_de.txt", CHARS, 200}
+	{"e15", 3, GENERIC_RAND, "vm", CHARS, 200}
+	{"e16", 3, GENERIC_RAND, "cvm,", CHARS, 200}
+	{"e17", 3, GENERIC_RAND, "xcvm,.", CHARS, 200}
+	{"e18", 3, ADAPT_RAND, "yxcvm,.-", CHARS, 200}
+	{"e19", 3, ADAPT_RAND, "yxcvbnm,.-", CHARS, 200}
+    {"e20", 3, wordList, "isLocal=True;fileName=middleLowerRow_de.txt", CHARS, 200}
+	{"e21", 4, ADAPT_RAND, "abcdefghijklmnopqrstuvwxyzäöüß.,-", CHARS, 200}
+	{"e22", 4, ADAPT_RAND_LANG, "abcdefghijklmnopqrstuvwxyzäöüßABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ.,-;:", CHARS, 200}
+	{"e23", 4, text, "isLocal=True;fileName=Johannes Schlaf_ In Dingsda.txt", NONE, 0}
+	{"e24", 5, GENERIC_RAND, "58", CHARS, 200}
+	{"e25", 5, GENERIC_RAND, "4589", CHARS, 200}
+	{"e26", 5, GENERIC_RAND, "345890", CHARS, 200}
+	{"e27", 5, GENERIC_RAND, "2345890", CHARS, 200}
+	{"e28", 5, ADAPT_RAND, "234567890", CHARS, 200}
+	{"e29", 5, ADAPT_RAND, "1234567890", CHARS, 200}
+	{"e30", 4, text, "isLocal=True;fileName=testText.txt", NONE, 0}
 }

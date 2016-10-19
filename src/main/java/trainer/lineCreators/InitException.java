@@ -13,6 +13,7 @@ public class InitException extends Exception {
 	
 	public InitException(Type type, String param) {
 		super(type.toString() + ": " + param);
+		this.type = type;
 	}
 
 	public Type getType() {

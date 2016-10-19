@@ -1,20 +1,26 @@
 package trainer.lineCreators;
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 public class FileLineCreatorProviderTest {
 
 	@Test
 	public void testExistentFile() throws InitException {
-		String param = "isLocal=True;fileName=middleRow.txt";
-		new FileLineCreatorProvider("wordList", is-> new WordListLineCreator(is))
-			.getLineCreator(param, null);
+		String param = "isLocal=True;fileName=middleRow_de.txt";
+		new WordListLineCreatorProvider().getLineCreator(param, null);
 	}
 	
-	@Test(expected = InitException.class)
-	public void testNonExistentFile() throws InitException {
+	@Test
+	public void testNonExistentFile() {
 		String param = "isLocal=True;fileName=notExistent";
-		new FileLineCreatorProvider("wordList", is-> new WordListLineCreator(is))
-			.getLineCreator(param, null);
+		try {
+			new WordListLineCreatorProvider().getLineCreator(param, null);
+		}
+		catch (InitException e) {
+			System.out.println(e);
+			assertTrue(e.getType() == InitException.Type.MISSING_FILE);
+		}
 	}
 
 }

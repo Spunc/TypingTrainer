@@ -5,25 +5,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 import trainer.PerformanceStats;
 
-public class FileLineCreatorProvider implements LineCreatorProvider {
+public abstract class FileLineCreatorProvider implements LineCreatorProvider {
 	
-	private String description;
-	private LineCreatorSupplier lcs;
-	
-	@FunctionalInterface
-	public interface LineCreatorSupplier {
-		LineCreator create(InputStream is) throws IOException;
-	}
-	
-	public FileLineCreatorProvider(String descriptionKey, LineCreatorSupplier lcs) {
-		description = ResourceBundle.getBundle("txtBundles.lineCreatorText")
-				.getString(descriptionKey);
-		this.lcs = lcs;
-	}
+	protected abstract LineCreator createLineCreator(InputStream is) throws IOException;
 
 	@Override
 	public LineCreator getLineCreator(String param, PerformanceStats ps) throws InitException {
@@ -36,7 +23,7 @@ public class FileLineCreatorProvider implements LineCreatorProvider {
 					getResourceAsStream("exerciseTxt/" + fileName)) {
 				if(is == null)
 					throw new InitException(InitException.Type.MISSING_FILE, fileName);
-				return lcs.create(is);
+				return createLineCreator(is);
 			}
 			catch (IOException e) {
 				throw new InitException(InitException.Type.OTHER, e.getMessage());
@@ -46,7 +33,7 @@ public class FileLineCreatorProvider implements LineCreatorProvider {
 			// File with words/texts resides inside subdirectory of user defined save directory
 			try(FileInputStream fis = new FileInputStream(install.Constants.getTextsDir()
 					.resolve(fileName).toFile())) {
-				return lcs.create(fis);
+				return createLineCreator(fis);
 			}
 			catch (FileNotFoundException e) {
 				throw new InitException(InitException.Type.MISSING_FILE, fileName);
@@ -60,16 +47,7 @@ public class FileLineCreatorProvider implements LineCreatorProvider {
 	@Override
 	public String shortParam(String param) {
 		Map<String, String> paramMap = StringCode.decode(param);
-		String fileName = paramMap.get("fileName");
-		if(Boolean.parseBoolean(paramMap.get("isLocal")))
-			return ResourceBundle.getBundle("txtBundles.exerciseNameText").getString(fileName);
-		else
-			return fileName;
-	}
-
-	@Override
-	public String description() {
-		return description;
+		return paramMap.get("fileName");
 	}
 
 }
