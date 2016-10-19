@@ -1,5 +1,6 @@
 package install;
 
+import java.awt.HeadlessException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -56,7 +57,7 @@ public class StartEnd {
 			CommandLine cmd = new DefaultParser().parse(options, args);
 			// ------------Uninstall option------------
 			if(cmd.hasOption("uninstall")) {
-				uninstall(cmd);
+				uninstall(cmd.hasOption("force"));
 				return;
 			}
 			// ------------Usual start-----------------
@@ -128,43 +129,66 @@ public class StartEnd {
 	/**
 	 * Uninstalls the application. First, it deletes the user data directory of the application.
 	 * Then, it deletes the registry entries of the application ({@link java.util.prefs.Preferences})
-	 * @param cmd command line arguments
-	 * @throws BackingStoreException if access to Java preferences failed
+	 * @param force if false, displays a confirmation dialog before uninstalling
+	 * @return true if deletion of data directory and preferences succeed
 	 */
-	private static void uninstall(CommandLine cmd) throws BackingStoreException {
-		// Application is already uninstalled 
-		if(!Preferences.userRoot().nodeExists(Constants.APP_PREF_NODE)) {
-			String message = getGUIText("alreadyUninstalled");
-			JOptionPane.showMessageDialog(null, message);
-			return;
+	public static boolean uninstall(boolean force) {
+		try {
+			// Application is already uninstalled
+			if(!Preferences.userRoot().nodeExists(Constants.APP_PREF_NODE)) {
+				String message = getGUIText("alreadyUninstalled");
+				JOptionPane.showMessageDialog(null, message);
+				return false;
+			}
+		} catch (HeadlessException | BackingStoreException e) {
+			System.err.println(e.getMessage());
+			return false;
 		}
-		// Delete user data directory of the application
+		// Get user data directory of the application
 		Preferences appPrefs = Preferences.userRoot().node(Constants.APP_PREF_NODE);
 		String appDirStr = appPrefs.get(Constants.PREF_USERSAVE_DIR, null);
-		if(appDirStr == null)
-			throw new RuntimeException("Preferences corrupted.");
-		Path appDir = Paths.get(appDirStr);
-		if(!Files.exists(appDir) || !Files.isDirectory(appDir))
-			throw new RuntimeException("File system corrupted.");
-		if(!cmd.hasOption("force")) {
-			// Show confirmation dialog to user
-			String firstMsgRow = MessageFormat.format(getGUIText("uninstallMsg1"),
-					appDir.toString());
-			int choice = JOptionPane.showConfirmDialog(
-				    null,
-				    firstMsgRow + '\n' + getGUIText("uninstallMsg2"),
-				    getGUIText("uninstall"),
-				    JOptionPane.YES_NO_OPTION, JOptionPane. WARNING_MESSAGE);
-			if(choice == JOptionPane.NO_OPTION)
-				return;
+		if(appDirStr == null) {
+			System.err.println("Preferences corrupted.");
+			return false;
 		}
+		Path appDir = Paths.get(appDirStr);
+		if(!Files.exists(appDir) || !Files.isDirectory(appDir)) {
+			System.err.println("File system corrupted.");
+			return false;
+		}
+		if(!force) {
+			// Show confirmation dialog to user
+			if(!showUninstallConfirmDlg())
+				return false;
+		}
+		// Delete user data directory and all its subdirectories
 		try {
 			PathUtils.deleteDirectoryTree(appDir);
 		} catch (IOException e) {
 			System.err.println("Could not delete " + appDir);
+			return false;
 		}
 		// Delete preferences
-		appPrefs.removeNode();
+		try {
+			appPrefs.removeNode();
+		} catch (BackingStoreException e) {
+			System.err.println(e.getMessage());
+			return false;
+		}
+		return true;
+	}
+	
+	public static boolean showUninstallConfirmDlg() {
+		Preferences appPrefs = Preferences.userRoot().node(Constants.APP_PREF_NODE);
+		String appDirStr = appPrefs.get(Constants.PREF_USERSAVE_DIR, null);
+		String firstMsgRow = MessageFormat.format(getGUIText("uninstallMsg1"),
+				appDirStr);
+		int choice = JOptionPane.showConfirmDialog(
+			    null,
+			    firstMsgRow + '\n' + getGUIText("uninstallMsg2"),
+			    getGUIText("uninstall"),
+			    JOptionPane.YES_NO_OPTION, JOptionPane. WARNING_MESSAGE);
+		return choice == JOptionPane.YES_OPTION;
 	}
 	
 	

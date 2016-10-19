@@ -5,6 +5,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import persistence.DbAccess;
 import trainer.Exercise;
 
 import static gui.Util.getGUIText;
@@ -57,6 +58,15 @@ public class MainWinMenu {
 				}
 				else
 					mw.removeKeyboard();
+				break;
+			case "uninstall":
+				if(mw.conditionalStopPractice()) {
+					if(install.StartEnd.showUninstallConfirmDlg()) {
+						DbAccess.getInstance().disconnect();
+						install.StartEnd.uninstall(true);
+						System.exit(0);
+					}
+				}
 			}
 		}
 	}
@@ -75,6 +85,12 @@ public class MainWinMenu {
 		menu.setMnemonic(getKeyCodeFromString(getGUIText("keyboardMnemonic")));
 		menuBar.add(menu);
 		addItem(menu, new JCheckBoxMenuItem(), "showKeyboard", "showKeyboardMnemonic");
+		
+		// Third column
+		menu = new JMenu(getGUIText("settings"));
+		menu.setMnemonic(getKeyCodeFromString(getGUIText("settingsMnemonic")));
+		menuBar.add(menu);
+		addItem(menu, new JMenuItem(), "uninstall", "uninstallMnemonic");
 	}
 	
 	
