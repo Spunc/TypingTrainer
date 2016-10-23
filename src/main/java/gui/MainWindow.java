@@ -38,7 +38,7 @@ public class MainWindow extends JFrame implements Observer {
 	
 	private static final int MAX_LINE_LENGTH = 60;
 	
-	private JLabel practiceUnitLabel = new JLabel("keine gewählt", JLabel.RIGHT);
+	private JLabel practiceUnitLabel = new JLabel(getGUIText("notSelected"), JLabel.RIGHT);
 	private JLabel typedCharLabel = new JLabel("0", JLabel.RIGHT);
 	private JLabel faultsLabel = new JLabel("0", JLabel.RIGHT);
 	private JLabel timeLabel = new JLabel("00:00", JLabel.RIGHT);
@@ -172,7 +172,7 @@ public class MainWindow extends JFrame implements Observer {
 		c.weightx = 0.2;
 		c.gridx = 0;
 		c.gridy = 0;
-		panel.add(new JLabel("Übung:"), c);
+		panel.add(new JLabel(getGUIText("exercise")), c);
 		c.gridx = 1;
 		panel.add(practiceUnitLabel, c);
 		c.gridx = 2;
@@ -180,7 +180,7 @@ public class MainWindow extends JFrame implements Observer {
 		panel.add(Box.createHorizontalGlue(), c);
 		c.gridx = 3;
 		c.weightx = 0.2;
-		panel.add(new JLabel("Fehler:"), c);
+		panel.add(new JLabel(getGUIText("errors")), c);
 		c.gridx = 4;
 		panel.add(faultsLabel, c);
 		c.gridx = 5;
@@ -188,12 +188,12 @@ public class MainWindow extends JFrame implements Observer {
 		panel.add(Box.createHorizontalGlue(), c);
 		c.gridx = 6;
 		c.weightx = 0.2;
-		panel.add(new JLabel("Zeit:"), c);
+		panel.add(new JLabel(getGUIText("time")), c);
 		c.gridx = 7;
 		panel.add(timeLabel, c);
 		c.gridx = 0;
 		c.gridy = 1;
-		panel.add(new JLabel("Getippte Zeichen:"), c);
+		panel.add(new JLabel(getGUIText("typedChars")), c);
 		c.gridx = 1;
 		panel.add(typedCharLabel, c);
 		c.gridx = 2;
@@ -201,7 +201,7 @@ public class MainWindow extends JFrame implements Observer {
 		panel.add(Box.createHorizontalGlue(), c);
 		c.gridx = 3;
 		c.weightx = 0.2;
-		panel.add(new JLabel("Fehlerquote:"), c);
+		panel.add(new JLabel(getGUIText("errorRate")), c);
 		c.gridx = 4;
 		panel.add(faultRateLabel, c);
 		c.gridx = 5;
@@ -209,7 +209,7 @@ public class MainWindow extends JFrame implements Observer {
 		panel.add(Box.createHorizontalGlue(), c);
 		c.gridx = 6;
 		c.weightx = 0.2;
-		panel.add(new JLabel("Anschläge/Min:"), c);
+		panel.add(new JLabel(getGUIText("strokesPM")), c);
 		c.gridx = 7;
 		panel.add(typedByMinLabel, c);
 		return panel;
@@ -222,7 +222,7 @@ public class MainWindow extends JFrame implements Observer {
 	
 	private JPanel getButtonPanel() {
 		JPanel panel = new JPanel();
-		startButton = new JButton("Start");
+		startButton = new JButton(getGUIText("start"));
 		startButton.addActionListener(evt -> {
 			startButton.setEnabled(false);
 			try {
@@ -237,7 +237,7 @@ public class MainWindow extends JFrame implements Observer {
 			}
 		});
 		startButton.setEnabled(false);
-		stopButton = new JButton("Stop");
+		stopButton = new JButton(getGUIText("stop"));
 		stopButton.addActionListener(e -> conditionalStopPractice());
 		stopButton.setEnabled(false);
 		panel.add(startButton);
