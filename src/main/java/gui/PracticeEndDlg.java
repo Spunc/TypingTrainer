@@ -47,7 +47,7 @@ public class PracticeEndDlg extends JDialog {
 	 	PerformanceRate totalPerformance = pc.getPerformanceStats().getTotalPerformanceRate();
 		long requiredTime = pc.getRequiredTime();
 		StringBuilder sb = new StringBuilder();
-		sb.append(getGUIText("typedChars") + ": ");
+		sb.append(getGUIText("numTypedChars") + ": ");
 		sb.append(totalPerformance.getHits());
 		sb.append('\n');
 		sb.append(getGUIText("errors") + ": ");

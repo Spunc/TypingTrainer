@@ -18,7 +18,7 @@ public interface LineCreatorProvider {
 	 * the behavior of the LineCreator.
 	 * @param ps gives access to the performance statistics of a running practice unit
 	 * to allow adaptive behavior of the LineCreator.
-	 * @return the LineCreator< implementation.
+	 * @return the LineCreator implementation.
 	 * @throws InitException if the LineCreator could not be created
 	 * @see LineCreator
 	 * @see PerformanceStats
