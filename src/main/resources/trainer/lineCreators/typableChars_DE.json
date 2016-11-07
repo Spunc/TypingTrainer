@@ -1,0 +1,6 @@
+{
+	"specials": "ß§",
+	"allowedAccents": [
+		{"\u0308": "aouAOU"}
+	]
+}
