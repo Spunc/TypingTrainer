@@ -92,6 +92,17 @@ public class Keyboard implements Observer {
 			image.colorKeyBlink(kte.c, KeyboardImage.Color.RED, blinkTime);
 	}
 	
+	/**
+	 * Get the IDs of all keyboard layouts that are available.
+	 * 
+	 * <p>IDs are Strings consisting of
+	 * a language ID (e. g. <i>DE</i> for German) and a keyboard layout ID (e. g. <i>qw</i>
+	 * for a Qwerty layout).
+	 * 
+	 * <p>Side note: The implemented keyboard layouts must have an entry in
+	 * <i>gui.keyboard/impl.layouts.txt</i>.
+	 * @return an array of all available keyboard layout IDs
+	 */
 	public static String[] getAvailableLayouts() {
 		try(BufferedReader r = new BufferedReader(
 				new InputStreamReader(Keyboard.class.getResourceAsStream("impl_layouts.txt"),
