@@ -61,5 +61,12 @@ public class Constants {
 	public static Path getUserSaveDir() {
 		return Paths.get(prefs.get(Constants.PREF_USERSAVE_DIR, null));
 	}
+	
+	// ----------- Default values for application properties ------------------------------
+	
+	/**
+	 * Will be used, if a default keyboard layout for the current country ID could not be found.
+	 */
+	public static String defaultKeyboardLayout = "DE_qw"; // currently the only implementation
 
 }

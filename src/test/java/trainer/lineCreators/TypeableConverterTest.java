@@ -6,28 +6,28 @@ import org.junit.Test;
 
 public class TypeableConverterTest {
 	
-	static TypeableConverter germanConverter = new TypeableConverter("DE");
+	static TypeableConverter germanyConverter = new TypeableConverter("DE");
 	
 	@Test
 	public void testGermanUmlaute() {
-		assertEquals(germanConverter.convert("äöüÄÖÜ"), "äöüÄÖÜ");
+		assertEquals(germanyConverter.convert("äöüÄÖÜ"), "äöüÄÖÜ");
 	}
 	
 	@Test
 	public void testGermanSpecials() {
-		assertEquals(germanConverter.convert("ß"), "ß");
+		assertEquals(germanyConverter.convert("ß§"), "ß§");
 	}
 	
 	@Test
 	public void testGermanStrippedAccents() {
 		// in no case comprehensive
-		assertEquals(germanConverter.convert("ąēȫ"), "aeö");
+		assertEquals(germanyConverter.convert("ąēȫ"), "aeö");
 	}
 	
 	@Test
-	public void testGermanSubstitution() {
+	public void testReplacedChars() {
 		// in no case comprehensive
-		assertTrue(germanConverter.convert("†").length() == 0);
+		assertEquals(germanyConverter.convert("ø†"), "??"); // the letter 'ø' cannot be converted to 'o'
 	}
 
 }

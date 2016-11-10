@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Optional;
 
 import trainer.KeyTypedEvent;
 import trainer.LineMonitor;
@@ -24,6 +25,12 @@ import trainer.LineMonitor;
  * typed next from <code>LineMonitor</code>. Therefore, you need to call
  * {@link #setLineMonitor(LineMonitor)}, before you add <code>Keyboard</code> as an
  * <code>Observer</code>.
+ * 
+ * <p>New keyboard layouts can be added, by first providing the required image and coordinate files.
+ * Second, the keyboard layout ID must be appended to the <i>impl_layouts.txt</i> file.
+ * 
+ * @see KeyboardImage
+ * @see KeyMapper
  * 
  * @author Lasse Osterhagen
  *
@@ -92,12 +99,35 @@ public class Keyboard implements Observer {
 			image.colorKeyBlink(kte.c, KeyboardImage.Color.RED, blinkTime);
 	}
 	
+	/**
+	 * Get an array of all keyboard layouts that are currently available.
+	 * @return all keyboard layouts that are currently available
+	 */
 	public static String[] getAvailableLayouts() {
 		try(BufferedReader r = new BufferedReader(
 				new InputStreamReader(Keyboard.class.getResourceAsStream("impl_layouts.txt"),
 						persistence.Constants.PROJECT_CHARSET))) {
 			return r.lines().toArray(s -> new String[s]);
-			
+		}
+		catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	/**
+	 * Get the ID of the default keyboard layout for a specific language
+	 * @param languageID the language ID, typically a two uppercase letters ID, like DE for
+	 * German
+	 * @return the default ID of the keyboard layout for the specified language ID or empty,
+	 * if no default has been defined.
+	 */
+	public static Optional<String> getDefaultKeyboardLayout(String languageID) {
+		try(BufferedReader r = new BufferedReader(
+				new InputStreamReader(
+						Keyboard.class.getResourceAsStream("map_lang_default_keyboard.txt"),
+						persistence.Constants.PROJECT_CHARSET))) {
+			Optional<String> val = r.lines().filter(s -> s.split(" ")[0].equals(languageID)).findFirst();
+			return Optional.of(val.get().split(" ")[1]);
 		}
 		catch (IOException e) {
 			throw new RuntimeException(e);

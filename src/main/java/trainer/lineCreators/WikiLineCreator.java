@@ -9,6 +9,13 @@ import javax.json.Json;
 import javax.json.stream.JsonParser;
 import javax.json.stream.JsonParser.Event;
 
+/**
+ * A <code>LineCreator</code> that takes text from a Wikipedia article.
+ * 
+ * @author Lasse
+ *
+ */
+
 public class WikiLineCreator implements LineCreator {
 	
 	private static final String fixedURLPart = ".wikipedia.org/w/api.php?action=query"
@@ -17,17 +24,38 @@ public class WikiLineCreator implements LineCreator {
 	
 	private TextLineCreator textLineCreator;
 	
+	/**
+	 * Create a <code>LineCreator</code> that uses the introduction of a random Wikipedia
+	 * article as text.
+	 * @param keyboardLayoutID the keyboard layout ID used for converting the text into typeable
+	 * characters
+	 * @param languageSubdomain A Wikipedia language-specific subdomain (e. g. <i>en</i> for
+	 * English)
+	 * @throws InitException if reading from Wikipedia fails (e. g. because the computer is not
+	 * connected to the interne).
+	 */
 	public WikiLineCreator(String keyboardLayoutID, String languageSubdomain) throws InitException {
 		initTextLineCreator(keyboardLayoutID, "https://" + languageSubdomain + fixedURLPart
 				+ "&exintro");
 	}
-
+	
+	/**
+	 * Create a <code>LineCreator</code> that uses the beginning of a random Wikipedia
+	 * article as text.
+	 * @param keyboardLayoutID the keyboard layout ID used for converting the text into typeable
+	 * characters
+	 * @param languageSubdomain A Wikipedia language-specific subdomain (e. g. <i>en</i> for
+	 * English)
+	 * @param numChars the length of the text
+	 * @throws InitException if reading from Wikipedia fails (e. g. because the computer is not
+	 * connected to the interne)
+	 */
 	public WikiLineCreator(String keyboardLayoutID, String languageSubdomain, int numChars) throws InitException {
 		initTextLineCreator(keyboardLayoutID, "https://" + languageSubdomain + fixedURLPart
 				+ "&exchars=" + numChars);
 	}
 	
-	// Test purposes only
+	// for test purposes only
 	public WikiLineCreator(String keyboardLayoutID, String languageSubdomain, String title) throws InitException {
 		initTextLineCreator(keyboardLayoutID, "https://" + languageSubdomain
 				+ ".wikipedia.org/w/api.php?action=query"
@@ -80,9 +108,9 @@ public class WikiLineCreator implements LineCreator {
 	}
 	
 	public static void main(String[] args) throws InitException, MalformedURLException {
-		WikiLineCreator wlc = new WikiLineCreator("DE", "de", 400);
+		WikiLineCreator wlc = new WikiLineCreator("DE", "en", 400);
 		while(wlc.hasNext())
-			System.out.println(wlc.create(40));
+			System.out.print(wlc.create(40));
 	}
 
 }
