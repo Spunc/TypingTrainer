@@ -12,7 +12,7 @@ import javax.json.stream.JsonParser.Event;
 /**
  * A <code>LineCreator</code> that takes text from a Wikipedia article.
  * 
- * @author Lasse
+ * @author Lasse Osterhagen
  *
  */
 
@@ -27,31 +27,31 @@ public class WikiLineCreator implements LineCreator {
 	/**
 	 * Create a <code>LineCreator</code> that uses the introduction of a random Wikipedia
 	 * article as text.
-	 * @param keyboardLayoutID the keyboard layout ID used for converting the text into typeable
+	 * @param keyboardCountryID the keyboard country ID used for converting the text into typeable
 	 * characters
-	 * @param languageSubdomain A Wikipedia language-specific subdomain (e. g. <i>en</i> for
+	 * @param languageSubdomain a Wikipedia language-specific subdomain (e. g. <i>en</i> for
 	 * English)
 	 * @throws InitException if reading from Wikipedia fails (e. g. because the computer is not
-	 * connected to the interne).
+	 * connected to the internet).
 	 */
-	public WikiLineCreator(String keyboardLayoutID, String languageSubdomain) throws InitException {
-		initTextLineCreator(keyboardLayoutID, "https://" + languageSubdomain + fixedURLPart
+	public WikiLineCreator(String keyboardCountryID, String languageSubdomain) throws InitException {
+		initTextLineCreator(keyboardCountryID, "https://" + languageSubdomain + fixedURLPart
 				+ "&exintro");
 	}
 	
 	/**
 	 * Create a <code>LineCreator</code> that uses the beginning of a random Wikipedia
 	 * article as text.
-	 * @param keyboardLayoutID the keyboard layout ID used for converting the text into typeable
+	 * @param keyboardCountryID the keyboard country ID used for converting the text into typeable
 	 * characters
-	 * @param languageSubdomain A Wikipedia language-specific subdomain (e. g. <i>en</i> for
+	 * @param languageSubdomain a Wikipedia language-specific subdomain (e. g. <i>en</i> for
 	 * English)
 	 * @param numChars the length of the text
 	 * @throws InitException if reading from Wikipedia fails (e. g. because the computer is not
-	 * connected to the interne)
+	 * connected to the internet)
 	 */
-	public WikiLineCreator(String keyboardLayoutID, String languageSubdomain, int numChars) throws InitException {
-		initTextLineCreator(keyboardLayoutID, "https://" + languageSubdomain + fixedURLPart
+	public WikiLineCreator(String keyboardCountryID, String languageSubdomain, int numChars) throws InitException {
+		initTextLineCreator(keyboardCountryID, "https://" + languageSubdomain + fixedURLPart
 				+ "&exchars=" + numChars);
 	}
 	
@@ -105,12 +105,6 @@ public class WikiLineCreator implements LineCreator {
 	@Override
 	public boolean hasNext() {
 		return textLineCreator.hasNext();
-	}
-	
-	public static void main(String[] args) throws InitException, MalformedURLException {
-		WikiLineCreator wlc = new WikiLineCreator("DE", "en", 400);
-		while(wlc.hasNext())
-			System.out.print(wlc.create(40));
 	}
 
 }

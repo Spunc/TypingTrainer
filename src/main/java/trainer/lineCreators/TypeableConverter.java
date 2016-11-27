@@ -47,7 +47,7 @@ import javax.json.stream.JsonParser.Event;
 
 public class TypeableConverter {
 	
-	private String specialChars;
+	private String specialChars = "";
 	private Map<Character, String> allowedAccents = new HashMap<>();
 	
 	/**
@@ -58,7 +58,8 @@ public class TypeableConverter {
 		String fileName = "typableChars_" + countryID + ".json";
 		try(InputStream is = TypeableConverter.class.getResourceAsStream(fileName)) {
 			if(is == null)
-				throw new RuntimeException("Missing resource: " + fileName);
+				return; // There is no typableChars specification for this countryID. As result,
+						// TypeableConverter will convert text into ordinary ASCII characters
 			parseJson(Json.createParser(is));
 			
 		}
@@ -78,8 +79,7 @@ public class TypeableConverter {
 		text = Normalizer.normalize(text, Normalizer.Form.NFKD);
 	    for(int i = 0, n = text.length(); i < n; ++i) {
 	        char c = text.charAt(i);
-	        if(c <= '\u007F')
-	        	// typical ASCII char
+	        if(c <= '\u007F') // typical ASCII char
 	        	sb.append(c);
 	        else if(allowedAccents.containsKey(c)
 	        		&& i>0

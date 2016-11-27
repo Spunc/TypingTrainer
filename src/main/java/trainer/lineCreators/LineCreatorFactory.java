@@ -21,9 +21,6 @@ import trainer.PerformanceStats;
 public class LineCreatorFactory {
 
 	private static Map<String, LineCreatorProvider> localLineCreatorProviders() {
-		// Just to remember why we need two times the same String:
-		// First: the name as found in field of Exercise.lineCreatorType
-		// Second: the key as found in resources.lineCreatorText.properties
 		return Collections.unmodifiableMap(Stream.of(
 		new SimpleEntry<>("GENERIC_RAND", new GenericWordLineCreatorProvider("GENERIC_RAND",
 			(p,s)->new RandWordCreator(p), Distributions.rightSkewed)),
