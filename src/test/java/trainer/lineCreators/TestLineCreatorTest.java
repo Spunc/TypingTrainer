@@ -23,14 +23,20 @@ public class TestLineCreatorTest {
 	}
 
 	@Test
-	public void testLine() {
-		String resultingLine = LINE + '\n';
-		assertTrue(testLineCreator.create(LINE_LEN).equals(resultingLine));
+	public void testFirstLine() {
+		assertEquals(testLineCreator.create(LINE_LEN), LINE + '\n');
+	}
+	
+	@Test
+	public void testLastLine() {
+		for(int i=0; i<NUM_REP-1; ++i) {
+			testLineCreator.create(LINE_LEN);
+		}
+		assertEquals(testLineCreator.create(LINE_LEN), LINE);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testCreateArgumentException() {
-		testLineCreator.create(LINE_LEN-1);
 		testLineCreator.create(LINE_LEN+1);
 	}
 	

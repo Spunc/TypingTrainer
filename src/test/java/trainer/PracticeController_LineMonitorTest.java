@@ -30,7 +30,6 @@ public class PracticeController_LineMonitorTest {
 		exercise = DefaultObjectFactory.getExercise();
 		exercise.setLimitType(LimitType.NONE);
 		pc = new PracticeController(exercise, maxLineLength);
-//		MockitoAnnotations.initMocks(this);
 		lm = pc.getLineMonitor();
 		pc.ready();
 		pc.run();

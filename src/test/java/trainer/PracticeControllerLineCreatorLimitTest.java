@@ -42,8 +42,12 @@ public class PracticeControllerLineCreatorLimitTest {
 		pc.setLineCreator(testLineCreator); //overwrite LineCreator with TestLineCreator
 	}
 	
-	private void writeLine() {
-		String line2Write = LINE + '\n';
+	private void writeLine(boolean isLastLine) {
+		String line2Write;
+		if(isLastLine)
+			line2Write = LINE;
+		else
+			line2Write = LINE + '\n';
 		LineMonitor lm = pc.getLineMonitor();
 		for(char c : line2Write.toCharArray())
 			lm.advanceIfCorrect(c);
@@ -56,10 +60,11 @@ public class PracticeControllerLineCreatorLimitTest {
 	public void testCorrectUsageState() {
 		pc.ready();
 		pc.run();
-		for(int i=0; i<NUM_REP; ++i) {
+		for(int i=0; i<NUM_REP-1; ++i) {
 			assertTrue(pc.getState() == PracticeController.State.RUNNING);
-			writeLine();
+			writeLine(false);
 		}
+		writeLine(true);
 		assertTrue(pc.getState() == PracticeController.State.REG_STOPPED);
 	}
 	
@@ -70,9 +75,10 @@ public class PracticeControllerLineCreatorLimitTest {
 	public void testWrongUsageState() {
 		pc.ready();
 		pc.run();
-		for(int i=0; i<NUM_REP; ++i) {
-			writeLine();
+		for(int i=0; i<NUM_REP-1; ++i) {
+			writeLine(false);
 		}
+		writeLine(true);
 		LineMonitor lm = pc.getLineMonitor();
 		lm.advanceIfCorrect('\n'); // write an additional char
 	}
@@ -85,7 +91,7 @@ public class PracticeControllerLineCreatorLimitTest {
 		pc.ready();
 		pc.run();
 		for(int i=0; i<NUM_REP-1; ++i) {
-			writeLine();
+			writeLine(false);
 		}
 		assertTrue(pc.getLine2().equals(""));
 	}

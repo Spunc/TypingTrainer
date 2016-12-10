@@ -44,11 +44,12 @@ public class LineMonitor extends Observable implements KeyListener {
 	}
 	
 	/**
-	 * Get the current char that needs to be typed next.
-	 * @return the char that needs to be typed next.
+	 * Get the current char that needs to be typed next. If there is no char to be typed
+	 * left, the <i>'\0'</i> will be returned.
+	 * @return the char that needs to be typed next or <i>'\0'</i>
 	 */
 	public char getCurrentChar() {
-		return line.charAt(position);
+		return position == line.length() ? '\0' : line.charAt(position);
 	}
 	
 	@Override
@@ -71,6 +72,8 @@ public class LineMonitor extends Observable implements KeyListener {
 	 * @return true if typed char was correct, otherwise false
 	 */
 	public boolean advanceIfCorrect(char c) {
+		// atm return type is used for test only
+		boolean correct;
 		setChanged();
 		if(!(pc.getState() == PracticeController.State.RUNNING))
 			throw new IllegalStateException("Illegal state: " + pc.getState());
@@ -84,12 +87,19 @@ public class LineMonitor extends Observable implements KeyListener {
 				++position;
 			}
 			notifyObservers(new KeyTypedEvent(c, true));
-			return true;
+			correct = true;
 		}
-		performanceStats.addError(getCurrentChar());
-		performanceStats.addWrongTyped(c);
-		notifyObservers(new KeyTypedEvent(c, false));
-		return false;
+		else {
+			performanceStats.addError(getCurrentChar());
+			performanceStats.addWrongTyped(c);
+			notifyObservers(new KeyTypedEvent(c, false));
+			correct = false;
+		}
+		// This state happens only if at the end of an Exercise with LimitType.None
+		if(position == line.length()) {
+			pc.regStop();
+		}
+		return correct;
 	}
 	
 	/**

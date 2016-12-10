@@ -28,6 +28,7 @@ public class TextLineCreator implements LineCreator {
 				result = wordBuffer.substring(0, hyphenIndex+1) + '\n';
 				wordBuffer = wordBuffer.substring(hyphenIndex+1);
 			}
+			// insert a hyphen within the word at the end of the line
 			else {
 				result = wordBuffer.substring(0, length-1) + "-\n";
 				wordBuffer = wordBuffer.substring(length-1);
@@ -42,8 +43,12 @@ public class TextLineCreator implements LineCreator {
 		while(length >= -1) { 	// Use of >= -1 will force wordBuffer to be filled, if there is at
 								// least one remaining word. (Use -1 because of space after word
 								// that will be removed at the end.)
-			if(!scanner.hasNext())
-				break;
+			// end of text
+			if(!scanner.hasNext()) {
+				sb.setLength(sb.length()-1); // delete last space
+				return sb.toString();
+			}
+			// more words left
 			String nextWord = scanner.next();
 			if(nextWord.length() > length) {
 				wordBuffer = nextWord;
