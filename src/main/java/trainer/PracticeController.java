@@ -32,7 +32,6 @@ public class PracticeController extends Observable {
 	private int maxLineLength;
 	private String line1; // the line that the typist has to type
 	private String line2; // the following line
-	private boolean isLastRow = false; //line1 currently displays the last row
 	private int correctTypedChars;
 	private long startTime;
 	private long stopTime;
@@ -71,12 +70,12 @@ public class PracticeController extends Observable {
 	}
 	
 	public void userStop() {
-		stopWatch.stop();
+		stopWatch.stop(); // needed in case this was a time-limited exercise
 		stop();
 		setState(State.USER_STOPPED);
 	}
 	
-	private void regStop() {
+	public void regStop() {
 		stop();
 		sessionPersist.saveSession2DB(exercise.getId(),
 				performanceStats.getTotalPerformanceRate(), requiredTime);
@@ -110,22 +109,13 @@ public class PracticeController extends Observable {
 	}
 	
 	public void newLine() {
-		// line1 shows the last row that the lineCreator can provide
-		if(isLastRow) {
-			lineMonitor.setLine("\0");
-				// Use the zero char as placeholder, so that a keyboard won't display anything
-			regStop();
-			return;
-		}
 		setChanged();
 		line1 = line2;
 		if(lineCreator.hasNext()) {
 			line2 = lineCreator.create(maxLineLength);
 		}
-		else {
+		else
 			line2 = "";
-			isLastRow = true;
-		}
 		lineMonitor.setLine(line1);
 		notifyObservers(Event.NEW_LINE);
 	}

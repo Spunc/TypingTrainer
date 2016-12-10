@@ -24,7 +24,7 @@ public class TextLineCreatorTest {
 		String line = tlc.create(20);
 		assertEquals("1st line differs.", "Example text, some\n", line);
 		line = tlc.create(20);
-		assertEquals("2nd line differs.", "example text.\n", line);
+		assertEquals("2nd line differs.", "example text.", line);
 		assertFalse(tlc.hasNext());
 		tlc.stop();
 	}
@@ -41,7 +41,7 @@ public class TextLineCreatorTest {
 		line = tlc.create(10);
 		assertEquals("3rd line differs.", "ithout\n", line);
 		line = tlc.create(10);
-		assertEquals("4th line differs.", "spaces.\n", line);
+		assertEquals("4th line differs.", "spaces.", line);
 		tlc.stop();
 	}
 	
@@ -55,7 +55,7 @@ public class TextLineCreatorTest {
 		line = tlc.create(10);
 		assertEquals("2nd line differs.", "ne with\n", line);
 		line = tlc.create(10);
-		assertEquals("3rd line differs.", "hyphens\n", line);
+		assertEquals("3rd line differs.", "hyphens", line);
 	}
 
 }

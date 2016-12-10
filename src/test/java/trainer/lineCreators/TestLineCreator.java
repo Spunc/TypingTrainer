@@ -22,17 +22,22 @@ public class TestLineCreator implements LineCreator {
 	 * @param repetitions how often a call to create will supply the line
 	 */
 	public TestLineCreator(String staticLine, int repetitions) {
-		this.staticLine = staticLine + '\n';
+		this.staticLine = staticLine;
 		this.repetitions = repetitions;
 	}
 
 	@Override
 	public String create(int length) {
-		if(length != staticLine.length()-1)
-			throw new IllegalArgumentException("length does not match the length of "
-					+ "staticLine.");
-		if(repetitions-- > 0)
+		if(length > staticLine.length())
+			throw new IllegalArgumentException("Demanded length greater than length of staticLine.");
+		if(repetitions > 1) {
+			--repetitions;
+			return staticLine + '\n';
+		}
+		else if(repetitions == 1) {
+			--repetitions;
 			return staticLine;
+		}
 		else
 			throw new IllegalStateException("LineCreator empty.");
 	}

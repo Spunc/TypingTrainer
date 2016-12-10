@@ -1,12 +1,17 @@
 package install;
 
 import java.awt.HeadlessException;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.Set;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -27,6 +32,8 @@ import static gui.Util.getGUIText;
 public class StartEnd {
 	
 	private static final String dbName = "typeWriter.db";
+	private static final String appPropertiesFile = "appProperties";
+	private static Properties appProperties;
 	
 	/**
 	 * Entry method of the applications. Handles administrative tasks:
@@ -55,29 +62,43 @@ public class StartEnd {
 		options.addOption("force", "do not ask for confirmations");
 		try {
 			CommandLine cmd = new DefaultParser().parse(options, args);
-			// ------------Uninstall option------------
+		// ------------Uninstall option-----------------
 			if(cmd.hasOption("uninstall")) {
 				uninstall(cmd.hasOption("force"));
 				return;
 			}
-			// ------------Usual start-----------------
-			if(!Preferences.userRoot().nodeExists(Constants.APP_PREF_NODE)) {
-				// Install
-				if(!install()) {
-					JOptionPane.showMessageDialog(null, getGUIText("aborted"), getGUIText("setup"),
-							JOptionPane. INFORMATION_MESSAGE);
-					return;
-				}
-			}
-			// Open database connection
-			Path dbPath = Constants.getUserSaveDir().resolve(dbName);
-			persistence.DbAccess.getInstance().connect(dbPath.toString());
-			SwingUtilities.invokeLater(() -> showMainWindow());
 		}
 		catch (ParseException e) {
-			System.err.println(e);
+			System.out.println(
+					  "Incorrect command line arguments.\n\n"
+					+ "Allowed options:\n"
+					+ "-uninstall  -- to uninstall the application\n"
+					+ "-force      -- in combination with -uninstall (do not ask for confirmation).");
 			return;
 		}
+		// ------------Usual start-----------------
+		if(!Preferences.userRoot().nodeExists(Constants.APP_PREF_NODE)) {
+			// Install
+			if(!install()) {
+				JOptionPane.showMessageDialog(null, getGUIText("aborted"), getGUIText("setup"),
+						JOptionPane. INFORMATION_MESSAGE);
+				return;
+			}
+		}
+		// Open Preferences
+		try(FileInputStream in = new FileInputStream(
+				Constants.getUserSaveDir().resolve(appPropertiesFile).toFile())) {
+			appProperties = new Properties();
+			appProperties.load(in);
+		}
+		catch (IOException e) {
+			System.err.println("Cannot read properties file; maybe currupted.");
+			return;
+		}
+		// Open database connection
+		Path dbPath = Constants.getUserSaveDir().resolve(dbName);
+		persistence.DbAccess.getInstance().connect(dbPath.toString());
+		SwingUtilities.invokeLater(() -> showMainWindow());
 	}
 	
 	private static void showMainWindow() {
@@ -108,7 +129,7 @@ public class StartEnd {
 		}
 		try {
 			// Create user defined root directory for application data
-			Files.createDirectories(chosenDir.get()); //does't throw exception if already existent
+			Files.createDirectories(chosenDir.get()); //doesn't throw exception if already existent
 			// Add location of application directory to Preferences
 			Preferences pref = Preferences.userRoot().node(Constants.APP_PREF_NODE);
 			pref.put(Constants.PREF_USERSAVE_DIR, chosenDir.get().toString());
@@ -117,6 +138,9 @@ public class StartEnd {
 			Files.createDirectory(Constants.getWordsDir());
 			Files.createDirectory(Constants.getTextsDir());
 			Files.createDirectory(Constants.getPluginsDir());
+			
+			// Create application Properties
+			createProperties();
 		} catch (IOException | BackingStoreException e) {
 			e.printStackTrace();
 			return false;
@@ -124,6 +148,22 @@ public class StartEnd {
 		// Fill tables
 		persistence.CreateInitialTables.createTables(chosenDir.get().resolve(dbName).toString());
 		return true;
+	}
+	
+	private static void createProperties() throws IOException {
+		Properties appProperties = new Properties();
+		Optional<String> defaultLayout = gui.keyboard.Keyboard.getDefaultKeyboardLayout(
+				Locale.getDefault().getCountry());
+		appProperties.setProperty("KeyboardLayout",
+				defaultLayout.orElse(Constants.defaultKeyboardLayout));
+		try(FileOutputStream out = new FileOutputStream(
+				Constants.getUserSaveDir().resolve(appPropertiesFile).toFile())) {
+			appProperties.store(out, "");
+		}
+		catch (FileNotFoundException e) {
+			//Shouldn't be possible, because write access was checked just recently.
+			throw new RuntimeException(e);
+		}
 	}
 	
 	/**
@@ -250,6 +290,12 @@ public class StartEnd {
 					return Optional.empty();
 			}
 		}
+	}
+	
+	public static String getProperty(String key) {
+		if(appProperties == null)
+			throw new IllegalStateException("Properties not loaded yet");
+		return appProperties.getProperty(key);
 	}
 	
 	
