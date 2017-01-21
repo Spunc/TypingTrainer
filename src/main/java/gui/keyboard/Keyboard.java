@@ -100,7 +100,6 @@ public class Keyboard implements Observer {
 	}
 	
 	/**
-<<<<<<< HEAD
 	 * Get the IDs of all keyboard layouts that are available.
 	 * 
 	 * <p>IDs are Strings consisting of
@@ -110,10 +109,6 @@ public class Keyboard implements Observer {
 	 * <p>Side note: The implemented keyboard layouts must have an entry in
 	 * <i>gui.keyboard/impl.layouts.txt</i>.
 	 * @return an array of all available keyboard layout IDs
-=======
-	 * Get an array of all keyboard layouts that are currently available.
-	 * @return all keyboard layouts that are currently available
->>>>>>> WikiLCreator
 	 */
 	public static String[] getAvailableLayouts() {
 		try(BufferedReader r = new BufferedReader(
